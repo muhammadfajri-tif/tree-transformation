@@ -18,4 +18,6 @@
 #define PLATFORM_NAME "linux" // linux
 #endif
 
+// Setup for File configuration (used in file.h)
+#define DEFAULT_TREE_FILE "tree.dat"
 #endif // currentos_H
