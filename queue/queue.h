@@ -1,7 +1,11 @@
 #ifndef queue_H
 #define queue_H
-#include "../linkedlist/linearList.h"
+#include "../linkedlist/linearList.c"
 
-// your header queue goes here below
+void enqueue(List *L, infotypeP data);
+
+infotypeP dequeue(List *L);
+
+infotypeP getFront(List L);
 
 #endif
