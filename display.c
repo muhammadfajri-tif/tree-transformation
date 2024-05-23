@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#if defined(_WIN64) || defined(_WIN32)
 #include <conio.h>
+#endif
 #include "header.h"
+#include "includes/config.h"
 
 void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
@@ -29,7 +32,7 @@ inputMenu:
         (*tAVL).root = NULL;
         printf("\nPembuatan non-binary tree berhasil");
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         mainMenu(t, btree, tAVL, treeType);
         break;
     case 2:
@@ -44,7 +47,7 @@ inputMenu:
         (*tAVL).root = NULL;
         printf("\nPembuatan non-binary tree dengan nodes default berhasil");
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         mainMenu(t, btree, tAVL, treeType);
         break;
     case 3:
@@ -53,7 +56,7 @@ inputMenu:
     default:
         printf("\nInput yang anda masukkan salah! Mohon input angka 1-2");
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     }
@@ -106,11 +109,11 @@ inputMenu:
     confirmation:
         printf("Apakah kamu yakin untuk membuat tree baru? ini akan menghapus tree yang sudah ada!\n");
         printf("Ketik y untuk ya dan n untuk tidak");
-        if (getch() == 'y')
+        if ((PLATFORM_NAME == "windows" ? getch() : getchar()) == 'y')
         {
             createTreeMenu(t, btree, tAVL, treeType);
         }
-        else if (getch() == 'n')
+        else if ((PLATFORM_NAME == "windows" ? getch() : getchar()) == 'n')
         {
             goto inputMenu;
         }
@@ -129,7 +132,7 @@ inputMenu:
         {
             printf("\nInput yang anda masukkan salah! Mohon input sesuai opsi menu!");
             printf("\nKetik apapun untuk melanjutkan...");
-            getch();
+            PLATFORM_NAME == "windows" ? getch() : getchar();
             goto inputMenu;
         }
         break;
@@ -139,7 +142,7 @@ inputMenu:
     default:
         printf("\nInput yang anda masukkan salah! Mohon input sesuai opsi menu!");
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     }
@@ -180,7 +183,7 @@ inputMenu:
         }
         printf("\nNode berhasil dimasukkan!");
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     case 2:
@@ -197,7 +200,7 @@ inputMenu:
             delete (tAVL);
         }
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     case 3:
@@ -215,7 +218,7 @@ inputMenu:
         }
         printf("\nNode berhasil diupdate!");
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     case 4:
@@ -251,7 +254,7 @@ inputMenu:
     default:
         printf("\nInput yang anda masukkan salah! Mohon input angka 1-4");
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     }
@@ -275,7 +278,7 @@ inputMenu:
     case 1:
         traverseMenu(t, btree, tAVL, treeType);
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     case 2:
@@ -292,7 +295,7 @@ inputMenu:
             PrintTree(Root(*tAVL), 0, (*tAVL).isBinary);
         }
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     case 3:
@@ -309,7 +312,7 @@ inputMenu:
             showTreeDetails(tAVL, treeType);
         }
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     case 4:
@@ -318,7 +321,7 @@ inputMenu:
     default:
         printf("\nInput yang anda masukkan salah! Mohon input angka 1-5");
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     }
@@ -373,7 +376,7 @@ void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
         printf("\nTidak dapat dilakukan transformasi lagi, kembali ke menu utama untuk kembali ke Non-Binary Tree atau Binary Tree");
     }
     printf("\nKetik apapun untuk melanjutkan...");
-    getch();
+    PLATFORM_NAME == "windows" ? getch() : getchar();
     mainMenu(t, btree, tAVL, treeType);
 }
 
@@ -385,21 +388,21 @@ void traverseMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
         printf("\n=== Traversal Non Binary Tree ===\n");
         traverse(*t);
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
     }
     else if (*treeType == BINARYTREE)
     {
         printf("\n=== Traversal Binary Tree ===\n");
         traverse(*btree);
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
     }
     else if (*treeType == AVLTREE)
     {
         printf("\n=== Traversal AVL Tree ===\n");
         traverse(*tAVL);
         printf("\nKetik apapun untuk melanjutkan...");
-        getch();
+        PLATFORM_NAME == "windows" ? getch() : getchar();
     }
     informationMenu(t, btree, tAVL, treeType);
 }
@@ -425,7 +428,7 @@ void switchTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
         {
             printf("\nInput yang anda masukkan salah! Mohon input 1 atau 2");
             printf("\nKetik apapun untuk melanjutkan...");
-            getch();
+            PLATFORM_NAME == "windows" ? getch() : getchar();
             goto invalidInput;
         }
         mainMenu(t, btree, tAVL, treeType);
@@ -454,7 +457,7 @@ void switchTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
         {
             printf("\nInput yang anda masukkan salah! Mohon input 1-3");
             printf("\nKetik apapun untuk melanjutkan...");
-            getch();
+            PLATFORM_NAME == "windows" ? getch() : getchar();
             goto input;
         }
         mainMenu(t, btree, tAVL, treeType);
