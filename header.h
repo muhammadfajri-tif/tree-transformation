@@ -4,6 +4,8 @@
 
 #define Root(P) (P).root
 #define IsBinary(P) (P).isBinary
+#define IsThreaded(P) (P).isThreaded
+#define IsAVL(P) (P).isAVL
 #define Info(P) (P)->info
 #define LeftThread(P) (P)->leftThread
 #define RightThread(P) (P)->rightThread
@@ -32,6 +34,7 @@ typedef struct eNode {
 typedef struct {
     address root;      /**< Pointer to the root node of the tree. */
     boolean isBinary;
+    boolean isThreaded;
     boolean isAVL;
 } Tree;
 
@@ -47,6 +50,7 @@ void insertBTNode(Tree *t, infotype info, infotype parent);
 address insertAVLNode (address root, infotype info);
 void delete(Tree *t);
 address deleteNBNode(Tree *t, infotype info);
+address deleteBTNode(Tree *t, infotype info);
 void update(Tree *t);
 void updateNode(Tree *t, infotype info, infotype newInfo);
 address search(Tree t, infotype check);
