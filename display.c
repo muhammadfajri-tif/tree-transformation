@@ -20,9 +20,11 @@ inputMenu:
     case 1:
         createTree(t);
         (*btree).isBinary = true;
+        (*btree).isThreaded = false;
         (*btree).isAVL = false;
         (*btree).root = NULL;
         (*tAVL).isBinary = true;
+        (*tAVL).isThreaded = false;
         (*tAVL).isAVL = true;
         (*tAVL).root = NULL;
         printf("\nPembuatan non-binary tree berhasil");
@@ -33,9 +35,11 @@ inputMenu:
     case 2:
         defaultTree(t);
         (*btree).isBinary = true;
+        (*btree).isThreaded = false;
         (*btree).isAVL = false;
         (*btree).root = NULL;
         (*tAVL).isBinary = true;
+        (*tAVL).isThreaded = false;
         (*tAVL).isAVL = true;
         (*tAVL).root = NULL;
         printf("\nPembuatan non-binary tree dengan nodes default berhasil");
@@ -75,7 +79,6 @@ inputMenu:
     }
     printf(" =====\n");
     printf("\nSelamat datang di program AVL Tree\n");
-
     printf("Silahkan Pilih Menu yang diinginkan\n");
     printf("1. Manipulasi Tree\n");
     printf("2. Informasi Tree\n");
@@ -152,7 +155,12 @@ inputMenu:
     printf("1. Insert Node\n");
     printf("2. Delete Node\n");
     printf("3. Update Node\n");
-    printf("4. Back to Main Menu\n");
+    printf("4. Transform Tree\n");
+    if (*treeType > NONBINARYTREE)
+    {
+        printf("5. Make Tree Threaded\n");
+    }
+    printf("99. Back to Main Menu\n");
     printf("Pilihan: ");
     scanf("%d", &choice);
     switch (choice)
@@ -178,15 +186,15 @@ inputMenu:
     case 2:
         if (*treeType == NONBINARYTREE)
         {
-            delete(t);
+            delete (t);
         }
         else if (*treeType == BINARYTREE)
         {
-            delete(btree);
+            delete (btree);
         }
         else
         {
-            delete(tAVL);
+            delete (tAVL);
         }
         printf("\nKetik apapun untuk melanjutkan...");
         getch();
@@ -211,6 +219,33 @@ inputMenu:
         goto inputMenu;
         break;
     case 4:
+        transformMenu(t, btree, tAVL, treeType);
+        break;
+    case 5:
+        if (*treeType > NONBINARYTREE)
+        {
+            if (*treeType == BINARYTREE)
+            {
+                createThread(btree);
+            }
+            else if (*treeType == AVLTREE)
+            {
+                createThread(tAVL);
+            }
+            printf("\nThread berhasil dibuat!");
+            printf("\nKetik apapun untuk melanjutkan...");
+            getch();
+            goto inputMenu;
+        }
+        else
+        {
+            printf("\nInput yang anda masukkan salah! Mohon input angka 1-4");
+            printf("\nKetik apapun untuk melanjutkan...");
+            getch();
+            goto inputMenu;
+        }
+        break;
+    case 99:
         mainMenu(t, btree, tAVL, treeType);
         break;
     default:
@@ -229,25 +264,21 @@ inputMenu:
     system("cls");
     printf("\nSelamat datang di program AVL Tree\n");
     printf("Silahkan Pilih Menu yang diinginkan\n");
-    printf("1. Transform\n");
-    printf("2. Traverse\n");
-    printf("3. Print Tree Visualization\n");
-    printf("4. Tree Details\n");
-    printf("5. Back to Main Menu\n");
+    printf("1. Traverse\n");
+    printf("2. Print Tree Visualization\n");
+    printf("3. Tree Details\n");
+    printf("4. Back to Main Menu\n");
     printf("Pilihan: ");
     scanf("%d", &choice);
     switch (choice)
     {
     case 1:
-        transformMenu(t, btree, tAVL, treeType);
-        break;
-    case 2:
         traverseMenu(t, btree, tAVL, treeType);
         printf("\nKetik apapun untuk melanjutkan...");
         getch();
         goto inputMenu;
         break;
-    case 3:
+    case 2:
         if (*treeType == NONBINARYTREE)
         {
             PrintTree(Root(*t), 0, (*t).isBinary);
@@ -264,7 +295,7 @@ inputMenu:
         getch();
         goto inputMenu;
         break;
-    case 4:
+    case 3:
         if (*treeType == NONBINARYTREE)
         {
             showTreeDetails(t, treeType);
@@ -281,7 +312,7 @@ inputMenu:
         getch();
         goto inputMenu;
         break;
-    case 5:
+    case 4:
         mainMenu(t, btree, tAVL, treeType);
         break;
     default:
@@ -452,6 +483,18 @@ inputMenu:
     {
         printf("AVL Tree\n");
     }
+
+    if (*treeType > NONBINARYTREE)
+    {
+        if (IsThreaded(*t))
+        {
+            printf("Threaded Tree: Yes\n");
+        }
+        else
+        {
+            printf("Threaded Tree: No\n");
+        }
+    }
     printf("Node count: ");
     printf("%d\n", nodeAmount(*t));
 
@@ -481,6 +524,45 @@ inputMenu:
             else
             {
                 printf("Node parent: %c\n", Info(searchParent(*t, Info(node))));
+            }
+            printf(IsBinary(*t) ? "Left Son: " : "First Son: ");
+            if (LeftSon(node) != NULL)
+            {
+                printf("%c\n", Info(LeftSon(node)));
+            }
+            else
+            {
+                printf("NULL\n");
+            }
+            printf(IsBinary(*t) ? "Right Son: " : "Next Brother: ");
+            if (RightSon(node) != NULL)
+            {
+                printf("%c\n", Info(RightSon(node)));
+            }
+            else
+            {
+                printf("NULL\n");
+            }
+            if (*treeType > NONBINARYTREE)
+            {
+                printf("Left Thread: ");
+                if (LeftThread(node))
+                {
+                    printf("Yes\n");
+                }
+                else
+                {
+                    printf("No\n");
+                }
+                printf("Right Thread: ");
+                if (RightThread(node))
+                {
+                    printf("Yes\n");
+                }
+                else
+                {
+                    printf("No\n");
+                }
             }
             if (*treeType != NONBINARYTREE)
             {

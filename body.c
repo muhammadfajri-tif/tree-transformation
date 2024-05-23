@@ -59,14 +59,20 @@ void insertBTNode(Tree *t, infotype info, infotype parent)
     address parentNode = search(*t, parent);
     if (parentNode != NULL)
     {
-        if (LeftSon(parentNode) == NULL)
+        if (LeftThread(parentNode) || LeftSon(parentNode) == NULL)
         {
             LeftSon(parentNode) = allocate(info);
         }
-        else if (RightSon(parentNode) == NULL)
+        else if (RightThread(parentNode) || RightSon(parentNode) == NULL)
         {
             RightSon(parentNode) = allocate(info);
         }
+
+        if (IsThreaded(*t))
+        {
+            createThread(t); // Update Thread
+        }
+        
     }
     else
     {
@@ -193,13 +199,16 @@ deleteNode:
         }
         else if (t->isBinary == true && t->isAVL == false)
         {
-            // delete binary tree
+            deleteBTNode(t, info);
         }
         else if (t->isBinary == true && t->isAVL == true)
         {
             // delete AVL tree
         }
-        PrintTree(t->root, 0, t->isBinary);
+        if (t->root != NULL)
+        {
+            PrintTree(t->root, 0, t->isBinary);
+        }
         printf("Node dengan info %c berhasil dihapus\n", info);
     }
     else
@@ -236,10 +245,33 @@ address deleteNBNode(Tree *t, infotype info)
     }
 }
 
+address deleteBTNode(Tree *t, infotype info)
+{
+    address curr, parent;
+    curr = search(*t, info);
+    if (curr != NULL)
+    {
+        parent = searchParent(*t, info);
+        if (LeftSon(parent) != NULL && Info(LeftSon(parent)) == info)
+        {
+            LeftSon(parent) = NULL;
+            free(curr);
+            return curr;
+        }
+        else
+        {
+            RightSon(parent) = NULL;
+            free(curr);
+            return curr;
+        }
+    }
+}
+
 void defaultTree(Tree *t)
 {
     t->root = allocate('S');
     t->isBinary = false;
+    t->isThreaded = false;
     t->isAVL = false;
 
     insertNBTNode(t, 'I', 'S');
@@ -354,6 +386,7 @@ address searchParent(Tree t, infotype check)
     {
         List stack;
         CreateList(&stack);
+        push(&stack, NULL);
         address curr;
         boolean resmi;
 
@@ -368,14 +401,14 @@ address searchParent(Tree t, infotype check)
                     return pull(&stack); // return parent
                 }
             }
-            if (FirstSon(curr) != NULL && resmi)
+            if (!LeftThread(curr) && FirstSon(curr) != NULL && resmi)
             {
                 push(&stack, curr);
                 curr = FirstSon(curr);
             }
             else
             {
-                if (NextBrother(curr) != NULL)
+                if (!LeftThread(curr) && FirstSon(curr) != NULL)
                 {
                     curr = NextBrother(curr);
                     resmi = true;
@@ -457,6 +490,7 @@ void transform(Tree nbtree, Tree *btree)
     address curr = nbtree.root;
     *btree = nbtree;
     (*btree).isBinary = true;
+    (*btree).isThreaded = false;
 }
 
 address leftRotate(address pivot)
@@ -563,14 +597,14 @@ void preOrder(Tree t, address node)
                 {
                     printf("%c ", Info(curr));
                 }
-                if (FirstSon(curr) != NULL && resmi)
+                if (!LeftThread(curr) && FirstSon(curr) != NULL && resmi)
                 {
                     push(&stack, curr);
                     curr = FirstSon(curr);
                 }
                 else
                 {
-                    if (NextBrother(curr) != NULL)
+                    if (!RightThread(curr) &&NextBrother(curr) != NULL)
                     {
                         curr = NextBrother(curr);
                         resmi = true;
@@ -589,8 +623,14 @@ void preOrder(Tree t, address node)
             if (node != NULL)
             {
                 printf("%c ", node->info);
-                preOrder(t, LeftSon(node));
-                preOrder(t, RightSon(node));
+                if (!LeftThread(node))
+                {
+                    preOrder(t, LeftSon(node));
+                }
+                if (!RightThread(node))
+                {
+                    preOrder(t, RightSon(node));
+                }
             }
         }
     }
@@ -617,7 +657,7 @@ void postOrder(Tree t, address node)
             resmi = true;
             while (curr != NULL)
             {
-                if (FirstSon(curr) != NULL && resmi)
+                if (!LeftThread(curr) && FirstSon(curr) != NULL && resmi)
                 {
                     push(&stack, curr);
                     curr = FirstSon(curr);
@@ -625,7 +665,7 @@ void postOrder(Tree t, address node)
                 else
                 {
                     printf("%c ", Info(curr));
-                    if (NextBrother(curr) != NULL)
+                    if (!RightThread(curr) && NextBrother(curr) != NULL)
                     {
                         curr = NextBrother(curr);
                         resmi = true;
@@ -643,8 +683,14 @@ void postOrder(Tree t, address node)
             // masukin postOrder versi binary tree
             if (node != NULL)
             {
-                postOrder(t, LeftSon(node));
-                postOrder(t, RightSon(node));
+                if (!LeftThread(node))
+                {
+                    postOrder(t, LeftSon(node));
+                }
+                if (!RightThread(node))
+                {
+                    postOrder(t, RightSon(node));
+                }
                 printf("%c ", node->info);
             }
         }
@@ -672,7 +718,7 @@ void inOrder(Tree t, address node)
             resmi = true;
             while (curr != NULL)
             {
-                if (FirstSon(curr) != NULL && resmi)
+                if (!LeftThread(curr) && FirstSon(curr) != NULL && resmi)
                 {
                     push(&stack, curr);
                     curr = FirstSon(curr);
@@ -694,7 +740,7 @@ void inOrder(Tree t, address node)
                     }
                     push(&stack, parent);
 
-                    if (NextBrother(curr) != NULL)
+                    if (!RightThread(curr) && NextBrother(curr) != NULL)
                     {
                         curr = NextBrother(curr);
                         resmi = true;
@@ -712,9 +758,15 @@ void inOrder(Tree t, address node)
             // inOrder versi binary tree
             if (node != NULL)
             {
-                inOrder(t, LeftSon(node));
+                if (!LeftThread(node))
+                {
+                    inOrder(t, LeftSon(node));
+                }
                 printf("%c ", Info(node));
-                inOrder(t, RightSon(node));
+                if (!RightThread(node))
+                {
+                    inOrder(t, RightSon(node));
+                }
             }
         }
     }
@@ -831,6 +883,8 @@ void createThread(Tree *T)
     enqueueInOrder(Root(*T), &Queue);
 
     linkThread(Root(*T), &Queue, &prev);
+
+    IsThreaded(*T) = true;
 }
 
 void linkThread(address P, List *Queue, address *prev)
@@ -840,7 +894,7 @@ void linkThread(address P, List *Queue, address *prev)
         return;
     }
 
-    if (LeftSon(P) != NULL)
+    if (!LeftThread(P) && LeftSon(P) != NULL)
     {
         linkThread(LeftSon(P), Queue, prev);
     }
@@ -859,7 +913,7 @@ void linkThread(address P, List *Queue, address *prev)
 
     *prev = dequeue(Queue);
 
-    if (RightSon(P) != NULL)
+    if (!RightThread(P) && RightSon(P) != NULL)
     {
         linkThread(RightSon(P), Queue, prev);
     }
@@ -884,14 +938,14 @@ void enqueueInOrder(address P, List *Queue)
         return;
     }
 
-    if (LeftSon(P) != NULL)
+    if (!LeftThread(P) && LeftSon(P) != NULL)
     {
         enqueueInOrder(LeftSon(P), Queue);
     }
 
     enqueue(Queue, P);
 
-    if (RightSon(P) != NULL)
+    if (!RightThread(P) && RightSon(P) != NULL)
     {
         enqueueInOrder(RightSon(P), Queue);
     }
@@ -917,7 +971,7 @@ int height(address n)
     }
     else
     {
-        return 1 + max(height(n->leftNode), height(n->rightNode));
+        return 1 + max(height(LeftThread(n) ? NULL : n->leftNode), height(RightThread(n) ? NULL : n->rightNode));
     }
 }
 
@@ -925,7 +979,7 @@ boolean isLeaf(Tree t, address n)
 {
     if (t.isBinary == true)
     {
-        if (LeftSon(n) == NULL && RightSon(n) == NULL && LeftThread(n) == false && RightThread(n) == false)
+        if ((LeftThread(n) && RightThread(n)) || (LeftSon(n) == NULL && RightSon(n) == NULL))
         {
             return true;
         }
@@ -968,14 +1022,14 @@ int leafAmount(Tree t)
                 count++;
             }
         }
-        if (FirstSon(curr) != NULL && resmi)
+        if (!LeftThread(curr) && FirstSon(curr) != NULL && resmi)
         {
             push(&stack, curr);
             curr = FirstSon(curr);
         }
         else
         {
-            if (NextBrother(curr) != NULL)
+            if (!RightThread(curr) && NextBrother(curr) != NULL)
             {
                 curr = NextBrother(curr);
                 resmi = true;
@@ -992,12 +1046,13 @@ int leafAmount(Tree t)
 
 int nodeAmount(Tree t)
 {
+
     List stack;
     CreateList(&stack);
     push(&stack, NULL);
     address curr;
-    boolean resmi;
     int count = 0;
+    boolean resmi;
 
     curr = t.root;
     resmi = true;
@@ -1007,14 +1062,14 @@ int nodeAmount(Tree t)
         {
             count++;
         }
-        if (FirstSon(curr) != NULL && resmi)
+        if (!LeftThread(curr) && FirstSon(curr) != NULL && resmi)
         {
             push(&stack, curr);
             curr = FirstSon(curr);
         }
         else
         {
-            if (NextBrother(curr) != NULL)
+            if (!RightThread(curr) && NextBrother(curr) != NULL)
             {
                 curr = NextBrother(curr);
                 resmi = true;
@@ -1026,6 +1081,7 @@ int nodeAmount(Tree t)
             }
         }
     }
+
     return count;
 }
 
@@ -1079,7 +1135,7 @@ int depth(Tree t)
                 {
                     if (LeftSon(current) != NULL && LeftThread(current) == false)
                     {
-                        if (LeftSon(LeftSon(current)) != NULL || RightSon(LeftSon(current)) != NULL)
+                        if ((!LeftThread(LeftSon(current)) && LeftSon(LeftSon(current)) != NULL) || (!RightThread(LeftSon(current)) && RightSon(LeftSon(current)) != NULL))
                         {
                             enqueue(&Queue, LeftSon(current));
                             count++;
@@ -1088,7 +1144,7 @@ int depth(Tree t)
 
                     if (RightSon(current) != NULL && RightThread(current) == false)
                     {
-                        if (LeftSon(RightSon(current)) != NULL || RightSon(RightSon(current)) != NULL)
+                        if ((!LeftThread(RightSon(current)) && LeftSon(RightSon(current)) != NULL) || (!RightThread(RightSon(current)) && RightSon(RightSon(current)) != NULL))
                         {
                             enqueue(&Queue, RightSon(current));
                             count++;
@@ -1190,11 +1246,17 @@ void PrintTree(address P, int Level, boolean isBinary)
             }
         }
         printf("%c\n", Info(P));
-        PrintTree(LeftSon(P), Level + 1, isBinary);
+        if (!LeftThread(P))
+        {
+            PrintTree(LeftSon(P), Level + 1, isBinary);
+        }
         if (isBinary)
         {
             Level++;
         }
-        PrintTree(NextBrother(P), Level, isBinary);
+        if (!RightThread(P))
+        {
+            PrintTree(NextBrother(P), Level, isBinary);
+        }
     }
 }
