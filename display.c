@@ -176,13 +176,35 @@ inputMenu:
         goto inputMenu;
         break;
     case 2:
-        printf("(Belum ada)");
+        if (*treeType == NONBINARYTREE)
+        {
+            delete(t);
+        }
+        else if (*treeType == BINARYTREE)
+        {
+            delete(btree);
+        }
+        else
+        {
+            delete(tAVL);
+        }
         printf("\nKetik apapun untuk melanjutkan...");
         getch();
         goto inputMenu;
         break;
     case 3:
-        update(t);
+        if (*treeType == NONBINARYTREE)
+        {
+            update(t);
+        }
+        else if (*treeType == BINARYTREE)
+        {
+            update(btree);
+        }
+        else
+        {
+            update(tAVL);
+        }
         printf("\nNode berhasil diupdate!");
         printf("\nKetik apapun untuk melanjutkan...");
         getch();
@@ -299,6 +321,7 @@ void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
         scanf("%d", &choice);
         if (choice == 1)
         {
+            tAVL->root = NULL; //delete the previous AVL tree
             tAVL->isBinary = true;
             balanceToAVL(btree->root, tAVL);
             printf("\nBalancing Binary Tree ke AVL Tree berhasil!");

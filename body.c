@@ -81,6 +81,7 @@ void insert(Tree *t)
 
     if (t->isBinary != true || t->isBinary == true && t->isAVL == false)
     {
+        printf("insert Tree");
         if (t->root == NULL)
         {
             printf("\nMasukkan info untuk root = ");
@@ -91,8 +92,12 @@ void insert(Tree *t)
         scanf("%d", &i);
         for (j = 0; j < i; j++)
         {
+            system("cls");
+            printf("===== Input Tree =====\n");
+            PrintTree(t->root, 0, t->isBinary);
             printf("\nList node dalam tree: ");
             listNodes(*t);
+            inputNODE:
             printf("\nMasukkan info node baru ke-%d = ", j + 1);
             scanf(" %c", &info);
             if (search(*t, info) == NULL)
@@ -110,11 +115,16 @@ void insert(Tree *t)
                             goto inputParent;
                         }
                         insertBTNode(t, info, parent);
+                        
                     }
                     else
                     {
                         insertNBTNode(t, info, parent);
                     }
+                    PrintTree(t->root, 0, t->isBinary);
+                    printf("Node dengan info %c berhasil dimasukkan\n", info);
+                    printf("ketik untuk melanjutkan...");
+                    getch();
                 }
                 else
                 {
@@ -125,7 +135,7 @@ void insert(Tree *t)
             else
             {
                 printf("\nInfo Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!");
-                j--;
+                goto inputNODE;
             }
         }
     }
@@ -141,19 +151,88 @@ void insert(Tree *t)
         scanf("%d", &i);
         for (j = 0; j < i; j++)
         {
+            system("cls");
+            printf("===== Input Tree =====\n");
+            PrintTree(t->root, 0, t->isBinary);
             printf("\nList node dalam tree : ");
             listNodes(*t);
+            inputNode:
             printf("\nMasukkan info node baru ke-%d = ", j + 1);
             scanf(" %c", &info);
             if (search(*t, info) == NULL)
             {
                 (*t).root = insertAVLNode(t->root, info);
+                PrintTree(t->root, 0, t->isBinary);
+                printf("Node dengan info %c berhasil dimasukkan\n", info);
+                printf("ketik untuk melanjutkan...");
+                getch();
             }
             else
             {
                 printf("\nInfo Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!");
-                j--;
+                goto inputNode;
             }
+        }
+    }
+}
+
+void delete(Tree *t)
+{
+    infotype info;
+    deleteNode:
+    system("cls");
+    PrintTree(t->root, 0, t->isBinary);
+    printf("\nList node :");
+    listNodes(*t);
+    printf("\nMasukkan Info Node Yang Ingin Dihapus = ");
+    scanf(" %c", &info);
+    if (search(*t, info) != NULL)
+    {
+        if (!t->isBinary)
+        {
+            deleteNBNode(t, info);
+        }
+        else if (t->isBinary == true && t->isAVL == false)
+        {
+            // delete binary tree
+        }
+        else if (t->isBinary == true && t->isAVL == true)
+        {
+            // delete AVL tree
+        }
+        PrintTree(t->root, 0, t->isBinary);
+        printf("Node dengan info %c berhasil dihapus\n", info);
+    }
+    else
+    {
+        printf("\nNode Tidak Ditemukan! Masukkan Info Node Yang Benar!\n");
+        goto deleteNode;
+    }
+}
+
+address deleteNBNode(Tree *t, infotype info)
+{
+    address curr, linkedNodes;
+    curr = search(*t, info);
+    if (curr != NULL)
+    {
+        linkedNodes = searchParent(*t, info);
+        if (linkedNodes->leftNode->info == info)
+        {
+            linkedNodes->leftNode = NULL;
+            free(curr);
+            return curr;
+        }
+        else
+        {
+            linkedNodes = searchParent(*t, info)->leftNode;
+            while (linkedNodes->rightNode->info != info)
+            {
+                linkedNodes = linkedNodes->rightNode;
+            }
+            linkedNodes->rightNode = NULL;
+            free(curr);
+            return curr;
         }
     }
 }
@@ -1044,33 +1123,6 @@ inputUpdatedNode:
 void updateNode(Tree *t, infotype info, infotype newInfo)
 {
     Info(search(*t, info)) = newInfo;
-}
-
-address deleteNBNode(Tree *t, infotype info)
-{
-    address curr, linkedNodes;
-    curr = search(*t, info);
-    if (curr != NULL)
-    {
-        linkedNodes = searchParent(*t, info);
-        if (linkedNodes->leftNode->info == info)
-        {
-            linkedNodes->leftNode = NULL;
-            free(curr);
-            return curr;
-        }
-        else
-        {
-            linkedNodes = searchParent(*t, info)->leftNode;
-            while (linkedNodes->rightNode->info != info)
-            {
-                linkedNodes = linkedNodes->rightNode;
-            }
-            linkedNodes->rightNode = NULL;
-            free(curr);
-            return curr;
-        }
-    }
 }
 
 void PrintTree(address P, int Level, boolean isBinary)

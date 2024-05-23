@@ -45,6 +45,7 @@ void insert(Tree *t);
 void insertNBTNode(Tree *t, infotype info, infotype parent);
 void insertBTNode(Tree *t, infotype info, infotype parent);
 address insertAVLNode (address root, infotype info);
+void delete(Tree *t);
 address deleteNBNode(Tree *t, infotype info);
 void update(Tree *t);
 void updateNode(Tree *t, infotype info, infotype newInfo);
