@@ -97,7 +97,7 @@ void insert(Tree *t)
             PrintTree(t->root, 0, t->isBinary);
             printf("\nList node dalam tree: ");
             listNodes(*t);
-            inputNODE:
+        inputNODE:
             printf("\nMasukkan info node baru ke-%d = ", j + 1);
             scanf(" %c", &info);
             if (search(*t, info) == NULL)
@@ -115,7 +115,6 @@ void insert(Tree *t)
                             goto inputParent;
                         }
                         insertBTNode(t, info, parent);
-                        
                     }
                     else
                     {
@@ -156,7 +155,7 @@ void insert(Tree *t)
             PrintTree(t->root, 0, t->isBinary);
             printf("\nList node dalam tree : ");
             listNodes(*t);
-            inputNode:
+        inputNode:
             printf("\nMasukkan info node baru ke-%d = ", j + 1);
             scanf(" %c", &info);
             if (search(*t, info) == NULL)
@@ -179,7 +178,7 @@ void insert(Tree *t)
 void delete(Tree *t)
 {
     infotype info;
-    deleteNode:
+deleteNode:
     system("cls");
     PrintTree(t->root, 0, t->isBinary);
     printf("\nList node :");
@@ -351,7 +350,8 @@ address search(Tree t, infotype check)
 // Function Search Parent Tree
 address searchParent(Tree t, infotype check)
 {
-    if(!t.isBinary){
+    if (!t.isBinary)
+    {
         List stack;
         CreateList(&stack);
         address curr;
@@ -365,7 +365,7 @@ address searchParent(Tree t, infotype check)
             {
                 if (Info(curr) == check)
                 {
-                    return pull(&stack);    //return parent
+                    return pull(&stack); // return parent
                 }
             }
             if (FirstSon(curr) != NULL && resmi)
@@ -387,10 +387,57 @@ address searchParent(Tree t, infotype check)
                 }
             }
         }
-    }else{
-        // searchParent binary tree
     }
-    
+    else
+    {
+        List Queue;
+        CreateList(&Queue);
+        address current = t.root;
+        address currentChild = NULL;
+
+        if (current != NULL)
+        {
+            if (Info(current) == check)
+            {
+                return NULL;
+            }
+            while (current != NULL || Queue.First != NULL)
+            {
+                if (LeftSon(current) != NULL && LeftThread(current) == false)
+                {
+                    if (Info(LeftSon(current)) == check)
+                    {
+                        return current;
+                    }
+                    if (LeftSon(LeftSon(current)) != NULL || RightSon(LeftSon(current)) != NULL)
+                    {
+                        enqueue(&Queue, LeftSon(current));
+                    }
+                }
+
+                if (RightSon(current) != NULL && RightThread(current) == false)
+                {
+                    if (Info(RightSon(current)) == check)
+                    {
+                        return current;
+                    }
+                    if (LeftSon(RightSon(current)) != NULL || RightSon(RightSon(current)) != NULL)
+                    {
+                        enqueue(&Queue, RightSon(current));
+                    }
+                }
+
+                if (Queue.First != NULL)
+                {
+                    current = dequeue(&Queue);
+                }
+                else
+                {
+                    current = NULL;
+                }
+            }
+        }
+    }
 }
 
 boolean IsEmpty(Tree t)
@@ -1069,13 +1116,14 @@ int depth(Tree t)
 
 int level(Tree t, infotype info)
 {
-	address cur = search(t, info);
-	int level = 0;
-	while(searchParent(t, cur->info) != NULL){
-		level++;
-		cur = searchParent(t, cur->info);
-	}
-	return level;
+    address cur = search(t, info);
+    int level = 0;
+    while (searchParent(t, cur->info) != NULL)
+    {
+        level++;
+        cur = searchParent(t, cur->info);
+    }
+    return level;
 }
 
 int balanceFactor(address n)
