@@ -6,6 +6,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+boolean fileExists(char filename[])
+{
+  FILE *file;
+  if (strcmp(filename, "\n") == 0)
+    file = fopen(DEFAULT_TREE_FILE, "rb");
+  else
+    file = fopen(filename, "rb");
+
+  if (file == NULL)
+    return false;
+
+  fclose(file);
+  return true;
+}
+
 FILE *accessFile(char filename[], char mode[])
 {
   FILE *file;
@@ -13,13 +28,12 @@ FILE *accessFile(char filename[], char mode[])
   boolean error = false;
 
   // empty string for filename will create default file
-  if (strcmp(filename, "") == 0)
+  if (strcmp(filename, "\n") == 0)
   {
     bufferName = (char *)malloc((sizeof(char) * strlen(DEFAULT_TREE_FILE)) + sizeof(char));
     strcpy(bufferName, DEFAULT_TREE_FILE);
   }
   else
-
   {
     bufferName = (char *)malloc(sizeof(char) * strlen(filename));
     strcpy(bufferName, filename);
@@ -50,7 +64,12 @@ FILE *accessFile(char filename[], char mode[])
 
 void loadNodesTree(char filename[], Tree *nbtree)
 {
-  FILE *file = accessFile(filename, "rb");
+  FILE *file;
+  if (strcpy(filename, "\n") == 0)
+    file = accessFile(DEFAULT_TREE_FILE, "rb");
+  else
+    file = accessFile(filename, "rb");
+
   char bufferInfo;
   char bufferParent;
   int totalNode = 0;
@@ -73,25 +92,31 @@ void loadNodesTree(char filename[], Tree *nbtree)
     totalNode++;
   }
 
-  printf("\033[1;34m[INFO]\t\033[1;0mBerhasil memuat Tree dari file '%s' dengan total %d node.\n", filename, totalNode);
+  printf("\033[1;34m[INFO]\t\033[1;0mBerhasil memuat Tree dari file '%s' dengan total %d node.\n", (strcmp(filename, "\n") == 0) ? DEFAULT_TREE_FILE : filename, totalNode);
 }
 
 void appendNodeTree(char filename[], Tree tree, address node)
 {
-  FILE *file = accessFile(filename, "ab");
-/*  */
+  FILE *file;
+  if (strcmp(filename, "\n") == 0)
+    file = accessFile(DEFAULT_TREE_FILE, "ab");
+  else
+    file = accessFile(filename, "ab");
+
   address parent = searchParent(tree, Info(node));
   fprintf(file, "%c,%c;", Info(node), parent == NULL ? '\0' : Info(parent));
   fclose(file);
 
-  printf("\033[1;34m[INFO]\t\033[1;0mBerhasil menyimpan Node '%c' ke dalam file.\n", Info(node));
+  printf("> Menyimpan Node '%c' ke dalam file.\n", Info(node));
 }
 
-// TODO: Change int tree to Tree root
 void saveNodesTree(char filename[], Tree tree, address node)
 {
   if (node == NULL)
+  {
+    printf("\n\033[1;34m[INFO]\t\033[1;0mBerhasil menyimpan data Tree ke dalam file.\n");
     return;
+  }
 
   appendNodeTree(filename, tree, node);
   saveNodesTree(filename, tree, LeftSon(node));  // left son
