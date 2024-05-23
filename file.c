@@ -83,7 +83,7 @@ void appendNodeTree(char filename[], Tree tree, address node)
   fprintf(file, "%c,%c;", Info(node), parent == NULL ? '\0' : Info(parent));
   fclose(file);
 
-  printf("[INFO] Berhasil menyimpan Node '%c' ke dalam file.\n", Info(node));
+  printf("\033[1;34m[INFO]\t\033[1;0mBerhasil menyimpan Node '%c' ke dalam file.\n", Info(node));
 }
 
 // TODO: Change int tree to Tree root
