@@ -4,8 +4,8 @@
 
 FILE *accessFile(char filename[], char mode[]);
 
-void loadNodesTree(char filename[], Tree tree);
+void loadNodesTree(char filename[], Tree nbtree);
 
-void saveNodesTree(Tree root);
+void saveNodesTree(char filename[], Tree root);
 
 #endif
