@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#if defined(_WIN64) || defined(_WIN32)
 #include <conio.h>
+#endif
 #include "header.h"
+#include "includes/config.h"
 
 address allocate(infotype info)
 {
@@ -92,7 +95,7 @@ void insert(Tree *t)
         scanf("%d", &i);
         for (j = 0; j < i; j++)
         {
-            system("cls");
+            PLATFORM_NAME == "windows" ? system("cls") : system("clear");
             printf("===== Input Tree =====\n");
             PrintTree(t->root, 0, t->isBinary);
             printf("\nList node dalam tree: ");
@@ -123,7 +126,7 @@ void insert(Tree *t)
                     PrintTree(t->root, 0, t->isBinary);
                     printf("Node dengan info %c berhasil dimasukkan\n", info);
                     printf("ketik untuk melanjutkan...");
-                    getch();
+                    PLATFORM_NAME == "windows" ? getch() : getchar();
                 }
                 else
                 {
@@ -150,7 +153,7 @@ void insert(Tree *t)
         scanf("%d", &i);
         for (j = 0; j < i; j++)
         {
-            system("cls");
+            PLATFORM_NAME == "windows" ? system("cls") : system("clear");
             printf("===== Input Tree =====\n");
             PrintTree(t->root, 0, t->isBinary);
             printf("\nList node dalam tree : ");
@@ -164,7 +167,7 @@ void insert(Tree *t)
                 PrintTree(t->root, 0, t->isBinary);
                 printf("Node dengan info %c berhasil dimasukkan\n", info);
                 printf("ketik untuk melanjutkan...");
-                getch();
+                PLATFORM_NAME == "windows" ? getch() : getchar();
             }
             else
             {
@@ -179,7 +182,7 @@ void delete(Tree *t)
 {
     infotype info;
 deleteNode:
-    system("cls");
+    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     PrintTree(t->root, 0, t->isBinary);
     printf("\nList node :");
     listNodes(*t);
