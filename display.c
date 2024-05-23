@@ -5,6 +5,7 @@
 #endif
 #include "header.h"
 #include "includes/config.h"
+#include "file.h"
 
 void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
@@ -47,7 +48,17 @@ inputMenu:
         mainMenu(t, btree, tAVL, treeType);
         break;
     case 3:
-        /* code */
+        char filename[] = DEFAULT_TREE_FILE;
+        loadNodesTree(filename, t);
+        (*btree).isBinary = true;
+        (*btree).isAVL = false;
+        (*btree).root = NULL;
+        (*tAVL).isBinary = true;
+        (*tAVL).isAVL = true;
+        (*tAVL).root = NULL;
+        printf("\nKetik apapun untuk melanjutkan...");
+        PLATFORM_NAME == "windows" ? getchar() : getchar();
+        mainMenu(t, btree, tAVL, treeType);
         break;
     default:
         printf("\nInput yang anda masukkan salah! Mohon input angka 1-2");
@@ -100,7 +111,10 @@ inputMenu:
         informationMenu(t, btree, tAVL, treeType);
         break;
     case 3:
-        /* code */
+        char filename[100];
+        printf("Masukkan nama file (tekan enter untuk menyimpan ke default file): ");
+        fgets(filename, 100, stdin);
+        saveNodesTree(filename, *t, Root(*t));
         break;
     case 4:
     confirmation:
