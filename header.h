@@ -1,5 +1,5 @@
-#ifndef dnbtree_H
-#define dnbtree_H
+#ifndef header_H
+#define header_H
 #include "includes/boolean.h"
 
 #define Root(P) (P).root
@@ -40,19 +40,21 @@ typedef struct {
 /******* operasi pada tree *******/
 address allocate(infotype info);
 void createTree(Tree *t);
-void insert(Tree *t);
 void defaultTree(Tree *t);
+void insert(Tree *t);
 void insertNBTNode(Tree *t, infotype info, infotype parent);
 void insertBTNode(Tree *t, infotype info, infotype parent);
+address insertAVLNode (address root, infotype info);
+address deleteNBNode(Tree *t, infotype info);
+void update(Tree *t);
+void updateNode(Tree *t, infotype info, infotype newInfo);
 address search(Tree t, infotype check);
 address searchParent(Tree t, infotype check);
 boolean IsEmpty(Tree t);
-void transform(Tree nbtree, Tree *btree);   //transform NB to B
 address leftRotate(address pivot);
 address rightRotate(address pivot);
-address insertAVLNode (address root, infotype info);
+void transform(Tree nbtree, Tree *btree);   //transform NB to B
 void balanceToAVL(address BT, Tree *AVLTree);   //balancing Btree to AVL Tree
-void updateTree(Tree *t, Tree *btree, Tree *tAVL);
 /********************************/
 
 /******* traversal tree *******/
@@ -70,18 +72,15 @@ void enqueueInOrder(address P, List *Queue);
 /******************************/
 
 /******* operasi lainnya *******/
+int level(Tree t, infotype info);
 int max(int a, int b);
 int height(address n);
 boolean isLeaf(Tree t, address n);
 int leafAmount(Tree t);
 int nodeAmount(Tree t);
 int depth(Tree t);
-int level(Tree t, infotype info);
 int balanceFactor(address n);
 void listNodes(Tree t);
-void update(Tree *t);
-void updateNode(Tree *t, infotype info, infotype newInfo);
-address deleteNBNode(Tree *t, infotype info);
 /******************************/
 
 /******* display *******/

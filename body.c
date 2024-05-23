@@ -77,7 +77,7 @@ void insertBTNode(Tree *t, infotype info, infotype parent)
 void insert(Tree *t)
 {
     infotype info, parent;
-    int i;
+    int i, j;
 
     if (t->isBinary != true || t->isBinary == true && t->isAVL == false)
     {
@@ -89,7 +89,7 @@ void insert(Tree *t)
         }
         printf("\nMasukkan jumlah node yang ingin dimasukkan = ");
         scanf("%d", &i);
-        for (int j = 0; j < i; j++)
+        for (j = 0; j < i; j++)
         {
             printf("\nList node dalam tree: ");
             listNodes(*t);
@@ -139,7 +139,7 @@ void insert(Tree *t)
         }
         printf("\nMasukkan jumlah node yang ingin dimasukkan = ");
         scanf("%d", &i);
-        for (int j = 0; j < i; j++)
+        for (j = 0; j < i; j++)
         {
             printf("\nList node dalam tree : ");
             listNodes(*t);
@@ -217,7 +217,7 @@ address search(Tree t, infotype check)
         }
     }
     else
-    { // search binary tree
+    {
         List Queue;
         CreateList(&Queue);
         address current = t.root;
@@ -272,41 +272,46 @@ address search(Tree t, infotype check)
 // Function Search Parent Tree
 address searchParent(Tree t, infotype check)
 {
-    List stack;
-    CreateList(&stack);
-    address curr;
-    boolean resmi;
+    if(!t.isBinary){
+        List stack;
+        CreateList(&stack);
+        address curr;
+        boolean resmi;
 
-    curr = t.root;
-    resmi = true;
-    while (curr != NULL)
-    {
-        if (resmi)
+        curr = t.root;
+        resmi = true;
+        while (curr != NULL)
         {
-            if (Info(curr) == check)
+            if (resmi)
             {
-                return pull(&stack);
+                if (Info(curr) == check)
+                {
+                    return pull(&stack);    //return parent
+                }
             }
-        }
-        if (FirstSon(curr) != NULL && resmi)
-        {
-            push(&stack, curr);
-            curr = FirstSon(curr);
-        }
-        else
-        {
-            if (NextBrother(curr) != NULL)
+            if (FirstSon(curr) != NULL && resmi)
             {
-                curr = NextBrother(curr);
-                resmi = true;
+                push(&stack, curr);
+                curr = FirstSon(curr);
             }
             else
             {
-                curr = pull(&stack);
-                resmi = false;
+                if (NextBrother(curr) != NULL)
+                {
+                    curr = NextBrother(curr);
+                    resmi = true;
+                }
+                else
+                {
+                    curr = pull(&stack);
+                    resmi = false;
+                }
             }
         }
+    }else{
+        // searchParent binary tree
     }
+    
 }
 
 boolean IsEmpty(Tree t)
@@ -985,51 +990,13 @@ int depth(Tree t)
 
 int level(Tree t, infotype info)
 {
-    List stack;
-    CreateList(&stack);
-    address curr, node;
-    boolean resmi;
-    int level = 0;
-
-    curr = t.root;
-    resmi = true;
-    while (curr != NULL)
-    {
-        if (resmi)
-        {
-            if (Info(curr) == info)
-            {
-                node = curr;
-                break;
-            }
-        }
-        if (FirstSon(curr) != NULL && resmi)
-        {
-            push(&stack, curr);
-            curr = FirstSon(curr);
-        }
-        else
-        {
-            if (NextBrother(curr) != NULL)
-            {
-                curr = NextBrother(curr);
-                resmi = true;
-            }
-            else
-            {
-                curr = pull(&stack);
-                resmi = false;
-            }
-        }
-    }
-
-    while (stack.First != NULL)
-    {
-        pull(&stack);
-        level++;
-    }
-
-    return level;
+	address cur = search(t, info);
+	int level = 0;
+	while(searchParent(t, cur->info) != NULL){
+		level++;
+		cur = searchParent(t, cur->info);
+	}
+	return level;
 }
 
 int balanceFactor(address n)
