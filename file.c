@@ -19,6 +19,7 @@ FILE *accessFile(char filename[], char mode[])
     strcpy(bufferName, DEFAULT_TREE_FILE);
   }
   else
+
   {
     bufferName = (char *)malloc(sizeof(char) * strlen(filename));
     strcpy(bufferName, filename);
@@ -78,7 +79,7 @@ void loadNodesTree(char filename[], Tree *nbtree)
 void appendNodeTree(char filename[], Tree tree, address node)
 {
   FILE *file = accessFile(filename, "ab");
-
+/*  */
   address parent = searchParent(tree, Info(node));
   fprintf(file, "%c,%c;", Info(node), parent == NULL ? '\0' : Info(parent));
   fclose(file);
