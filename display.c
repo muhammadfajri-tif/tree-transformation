@@ -112,6 +112,7 @@ inputMenu:
         if ((PLATFORM_NAME == "windows" ? getch() : getchar()) == 'y')
         {
             createTreeMenu(t, btree, tAVL, treeType);
+            *treeType = NONBINARYTREE;
         }
         else if ((PLATFORM_NAME == "windows" ? getch() : getchar()) == 'n')
         {
@@ -176,14 +177,15 @@ inputMenu:
         else if (*treeType == BINARYTREE)
         {
             insert(btree);
+            if (IsThreaded(*btree))
+            {
+                createThread(btree);
+            }
         }
         else
         {
             insert(tAVL);
         }
-        printf("\nNode berhasil dimasukkan!");
-        printf("\nKetik apapun untuk melanjutkan...");
-        PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     case 2:
