@@ -70,12 +70,6 @@ void insertBTNode(Tree *t, infotype info, infotype parent)
         {
             RightSon(parentNode) = allocate(info);
         }
-
-        if (IsThreaded(*t))
-        {
-            createThread(t); // Update Thread
-        }
-        
     }
     else
     {
@@ -86,9 +80,10 @@ void insertBTNode(Tree *t, infotype info, infotype parent)
 void insert(Tree *t)
 {
     infotype info, parent;
+    address parentNode;
     int i, j;
 
-    if (t->isBinary != true || t->isBinary == true && t->isAVL == false)
+    if (t->isBinary != true || (t->isBinary == true && t->isAVL == false))
     {
         printf("insert Tree");
         if (t->root == NULL)
@@ -114,11 +109,12 @@ void insert(Tree *t)
             inputParent:
                 printf("Masukkan info parent node baru ke-%d = ", j + 1);
                 scanf(" %c", &parent);
-                if (search(*t, parent) != NULL)
+                parentNode = search(*t, parent);
+                if (parentNode != NULL)
                 {
                     if (t->isBinary == true)
                     {
-                        if (LeftSon(search(*t, parent)) != NULL && RightSon(search(*t, parent)) != NULL)
+                        if (!LeftThread(parentNode) && LeftSon(parentNode) != NULL && RightThread(parentNode) && RightSon(parentNode) != NULL)
                         {
                             printf("\nParent dengan info %c sudah memiliki 2 anak!\n", parent);
                             goto inputParent;
@@ -228,9 +224,10 @@ address deleteNBNode(Tree *t, infotype info)
     if (curr != NULL)
     {
         linkedNodes = searchParent(*t, info);
-        if (linkedNodes->leftNode->info == info)
+        if (linkedNodes->leftNode->info == info) // Jika merupakan left node/first son
         {
-            linkedNodes->leftNode = NULL;
+            linkedNodes->leftNode = NextBrother(curr);
+            NextBrother(curr) = NULL;
             free(curr);
             return curr;
         }
@@ -241,7 +238,8 @@ address deleteNBNode(Tree *t, infotype info)
             {
                 linkedNodes = linkedNodes->rightNode;
             }
-            linkedNodes->rightNode = NULL;
+            linkedNodes->rightNode = NextBrother(curr);
+            NextBrother(curr) = NULL;
             free(curr);
             return curr;
         }
@@ -250,22 +248,134 @@ address deleteNBNode(Tree *t, infotype info)
 
 address deleteBTNode(Tree *t, infotype info)
 {
-    address curr, parent;
-    curr = search(*t, info);
-    if (curr != NULL)
+    if (IsThreaded(*t))
     {
-        parent = searchParent(*t, info);
-        if (LeftSon(parent) != NULL && Info(LeftSon(parent)) == info)
+        address current, currentParent, node, successor, nodeParent, successorParent;
+        List Queue;
+        CreateList(&Queue);
+        enqueueInOrder(Root(*t), &Queue);
+        push(&Queue, NULL);
+        node = search(*t, info);
+        successor = Info(Search(Queue, node)->next);
+        if (node != NULL)
         {
-            LeftSon(parent) = NULL;
-            free(curr);
-            return curr;
+            if (node != Root(*t)) // Jika node yang dihapus bukan root
+            {
+                nodeParent = searchParent(*t, info);
+                if (!isLeaf(*t, node))
+                {
+                    if (Info(LeftSon(nodeParent)) == info) // Jika merupakan left son
+                    {
+                        if (!RightThread(node) && RightSon(node) != NULL) // Jika memiliki right son
+                        {
+                            if (!LeftThread(node) && LeftSon(node) != NULL) // Jika memiliki left son
+                            {
+                                LeftSon(RightSon(node)) = LeftSon(node);
+                                LeftSon(node) = NULL;
+                            }
+                            LeftSon(nodeParent) = RightSon(node);
+                            RightSon(node) = NULL;
+                            free(node);
+                            return node;
+                        }
+                        else // Jika tidak memiliki right son (thread)
+                        {
+                            LeftSon(nodeParent) = LeftSon(node);
+                            LeftSon(node) = NULL;
+                            RightSon(node) = NULL;
+                            free(node);
+                            return node;
+                        }
+                    }
+                    else // Jika merupakan right son
+                    {
+                        if (!RightThread(node) && RightSon(node) != NULL) // Jika memiliki right son
+                        {
+                            if (!LeftThread(node) && LeftSon(node) != NULL) // Jika memiliki left son
+                            {
+                                LeftSon(RightSon(node)) = LeftSon(node);
+                                LeftSon(node) = NULL;
+                            }
+                            RightSon(nodeParent) = RightSon(node);
+                            RightSon(node) = NULL;
+                            free(node);
+                            return node;
+                        }
+                        else // Jika tidak memiliki right son (thread)
+                        {
+                            if (successor != Root(*t))
+                            {
+                                successorParent = searchParent(*t, Info(successor));
+                                if (successor == LeftSon(successorParent))
+                                {
+                                    LeftSon(successorParent) = LeftSon(successor);
+                                }
+                                else if (successor == RightSon(successorParent))
+                                {
+                                    RightSon(successorParent) = LeftSon(successor);
+                                }
+                                LeftSon(successor) = LeftSon(node);
+                                RightSon(nodeParent) = successor;
+                                LeftSon(node) = NULL;
+                                free(node);
+                                return node;
+                            }
+                            else
+                            {
+                                RightSon(nodeParent) = LeftSon(node);
+                                LeftSon(node) = NULL;
+                                free(node);
+                                return node;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (Info(LeftSon(nodeParent)) == info)
+                    {
+                        LeftSon(nodeParent) = NULL;
+                        free(node);
+                        return node;
+                    }
+                    else
+                    {
+                        RightSon(nodeParent) = NULL;
+                        free(node);
+                        return node;
+                    }
+                }
+            }
+            else // Jika node yang dihapus merupakan root
+            {
+                printf("Tidak bisa menghapus root!\n");
+                printf("\nKetik apapun untuk melanjutkan...");
+                PLATFORM_NAME == "windows" ? getch() : getchar();
+                return NULL;
+            }
         }
-        else
+
+        createThread(t); // Update Thread
+    }
+    else
+    {
+        address node, nodeParent;
+        node = search(*t, info);
+        if (node != NULL)
         {
-            RightSon(parent) = NULL;
-            free(curr);
-            return curr;
+            nodeParent = searchParent(*t, info);
+            if (LeftSon(nodeParent) != NULL && Info(LeftSon(nodeParent)) == info)
+            {
+                LeftSon(nodeParent) = NULL;
+                free(node);
+                return node;
+            }
+            else
+            {
+                RightSon(nodeParent) = NULL;
+                free(node);
+                return node;
+            }
         }
     }
 }
@@ -344,7 +454,7 @@ address search(Tree t, infotype check)
             }
             while (current != NULL || Queue.First != NULL)
             {
-                if (LeftSon(current) != NULL)
+                if (!LeftThread(current) && LeftSon(current) != NULL)
                 {
                     if (Info(LeftSon(current)) == check)
                     {
@@ -356,7 +466,7 @@ address search(Tree t, infotype check)
                     }
                 }
 
-                if (RightSon(current) != NULL)
+                if (!RightThread(current) && RightSon(current) != NULL)
                 {
                     if (Info(RightSon(current)) == check)
                     {
@@ -377,8 +487,9 @@ address search(Tree t, infotype check)
                     current = NULL;
                 }
             }
+
+            return NULL;
         }
-        return NULL;
     }
 }
 
@@ -404,14 +515,14 @@ address searchParent(Tree t, infotype check)
                     return pull(&stack); // return parent
                 }
             }
-            if (!LeftThread(curr) && FirstSon(curr) != NULL && resmi)
+            if (FirstSon(curr) != NULL && resmi)
             {
                 push(&stack, curr);
                 curr = FirstSon(curr);
             }
             else
             {
-                if (!LeftThread(curr) && FirstSon(curr) != NULL)
+                if (NextBrother(curr) != NULL)
                 {
                     curr = NextBrother(curr);
                     resmi = true;
@@ -607,7 +718,7 @@ void preOrder(Tree t, address node)
                 }
                 else
                 {
-                    if (!RightThread(curr) &&NextBrother(curr) != NULL)
+                    if (!RightThread(curr) && NextBrother(curr) != NULL)
                     {
                         curr = NextBrother(curr);
                         resmi = true;
@@ -982,7 +1093,7 @@ boolean isLeaf(Tree t, address n)
 {
     if (t.isBinary == true)
     {
-        if ((LeftThread(n) && RightThread(n)) || (LeftSon(n) == NULL && RightSon(n) == NULL))
+        if (((LeftThread(n) || LeftSon(n) == NULL) && (RightThread(n) || RightSon(n) == NULL)))
         {
             return true;
         }
