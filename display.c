@@ -68,19 +68,23 @@ void mainMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
     int choice;
 inputMenu:
     system("cls");
-    showTreeTypes(*treeType);
-    printf("Selamat datang di program AVL Tree\n");
-    printf("Silahkan Pilih Menu yang diinginkan\n");
-    printf("1. Manipulasi Tree\n");
-    printf("2. Informasi Tree\n");
-    printf("3. Save Tree to File\n");
-    printf("4. Create New Tree\n");
+    printGridUI("Main Menu", *treeType);
+    PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
+
+    gotoxy(0, 4);
+    printHalfScreen("Selamat datang di program transformasi", false, false);
+    printHalfScreen("Non-Binary Tree ke AVL Tree!", true, false);
+    printHalfScreen("Silahkan pilih beberapa opsi fitur berikut:", true, false);
+    printHalfScreen("1. Manipulasi Tree", true, false);
+    printHalfScreen("2. Informasi Tree", true, false);
+    printHalfScreen("3. Save Tree to File", true, false);
+    printHalfScreen("4. Create New Tree", true, false);
     if (*treeType > NONBINARYTREE)
     {
-        printf("5. Rollback Tree\n");
+        printHalfScreen("5. Rollback Tree", true, false);
     }
-    printf("99. Exit\n");
-    printf("Pilihan: ");
+    printHalfScreen("99. Exit", true, false);
+    printHalfScreen("Pilihan: ", true, false);
     scanf("%d", &choice);
     switch (choice)
     {
@@ -95,8 +99,9 @@ inputMenu:
         break;
     case 4:
     confirmation:
-        printf("Apakah kamu yakin untuk membuat tree baru? ini akan menghapus tree yang sudah ada!\n");
-        printf("Ketik y untuk ya dan n untuk tidak");
+        printHalfScreen("Apakah kamu yakin untuk membuat tree baru?", true, false);
+        printHalfScreen("Ini akan menghapus tree yang sudah ada!\n", true, false);
+        printHalfScreen("Ketik y untuk ya dan n untuk tidak", true, false);
         if ((PLATFORM_NAME == "windows" ? getch() : getchar()) == 'y')
         {
             createTreeMenu(t, btree, tAVL, treeType);
@@ -107,7 +112,7 @@ inputMenu:
         }
         else
         {
-            printf("\nInput yang anda masukkan salah! Mohon input y atau n");
+            printHalfScreen("Input yang anda masukkan salah! Mohon input y atau n", true, false);
             goto confirmation;
         }
         break;
@@ -118,8 +123,8 @@ inputMenu:
         }
         else
         {
-            printf("\nInput yang anda masukkan salah! Mohon input sesuai opsi menu!");
-            printf("\nKetik apapun untuk melanjutkan...");
+            printHalfScreen("Input yang anda masukkan salah! Mohon input sesuai opsi menu!", true, false);
+            printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
             PLATFORM_NAME == "windows" ? getch() : getchar();
             goto inputMenu;
         }
@@ -128,8 +133,8 @@ inputMenu:
         exit(0);
         break;
     default:
-        printf("\nInput yang anda masukkan salah! Mohon input sesuai opsi menu!");
-        printf("\nKetik apapun untuk melanjutkan...");
+        printHalfScreen("Input yang anda masukkan salah! Mohon input sesuai opsi menu!", true, false);
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
@@ -141,18 +146,21 @@ void manipulationMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
     int choice;
 inputMenu:
     system("cls");
-    showTreeTypes(*treeType);
-    printf("Silahkan Pilih Menu Manipulation yang diinginkan\n");
-    printf("1. Insert Node\n");
-    printf("2. Delete Node\n");
-    printf("3. Update Node\n");
-    printf("4. Transform Tree\n");
+    printGridUI("Manipulation Menu", *treeType);
+    PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
+
+    gotoxy(0, 4);
+    printHalfScreen("Silahkan Pilih Menu Manipulation yang diinginkan", false, false);
+    printHalfScreen("1. Insert Node", true, false);
+    printHalfScreen("2. Delete Node", true, false);
+    printHalfScreen("3. Update Node", true, false);
+    printHalfScreen("4. Transform Tree", true, false);
     if (*treeType > NONBINARYTREE)
     {
-        printf("5. Make Tree Threaded\n");
+        printHalfScreen("5. Create Thread", true, false);
     }
-    printf("99. Back to Main Menu\n");
-    printf("Pilihan: ");
+    printHalfScreen("99. Back to Main Menu", true, false);
+    printHalfScreen("Pilihan: ", true, false);
     scanf("%d", &choice);
     switch (choice)
     {
@@ -188,7 +196,7 @@ inputMenu:
         {
             delete (tAVL);
         }
-        printf("\nKetik apapun untuk melanjutkan...");
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
@@ -205,8 +213,8 @@ inputMenu:
         {
             update(tAVL);
         }
-        printf("\nNode berhasil diupdate!");
-        printf("\nKetik apapun untuk melanjutkan...");
+        printHalfScreen("Node berhasil diupdate!", true, false);
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
@@ -224,15 +232,15 @@ inputMenu:
             {
                 createThread(tAVL);
             }
-            printf("\nThread berhasil dibuat!");
-            printf("\nKetik apapun untuk melanjutkan...");
+            printHalfScreen("Thread berhasil dibuat!", true, false);
+            printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
             getch();
             goto inputMenu;
         }
         else
         {
-            printf("\nInput yang anda masukkan salah! Mohon input angka 1-4");
-            printf("\nKetik apapun untuk melanjutkan...");
+            printHalfScreen("Input yang anda masukkan salah! Mohon input angka 1-4", true, false);
+            printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
             getch();
             goto inputMenu;
         }
@@ -241,8 +249,8 @@ inputMenu:
         mainMenu(t, btree, tAVL, treeType);
         break;
     default:
-        printf("\nInput yang anda masukkan salah! Mohon input angka 1-4");
-        printf("\nKetik apapun untuk melanjutkan...");
+        printHalfScreen("Input yang anda masukkan salah! Mohon input angka 1-4", true, false);
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
@@ -599,5 +607,5 @@ void showTreeTypes(int treeType)
     {
         printf("\033[0;32mAVL Tree\033[0m");
     }
-    printf(" =====\n\n");
+    printf(" =====");
 }
