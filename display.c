@@ -10,6 +10,7 @@ void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
 inputMenu:
+    *treeType = NONBINARYTREE;
     system("cls");
     printf("Selamat datang di program AVL Tree\n");
     printf("Pilih cara create tree yang diinginkan:\n");
@@ -112,7 +113,6 @@ inputMenu:
         if ((PLATFORM_NAME == "windows" ? getch() : getchar()) == 'y')
         {
             createTreeMenu(t, btree, tAVL, treeType);
-            *treeType = NONBINARYTREE;
         }
         else if ((PLATFORM_NAME == "windows" ? getch() : getchar()) == 'n')
         {
