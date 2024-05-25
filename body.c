@@ -599,12 +599,26 @@ boolean IsEmpty(Tree t)
     }
 }
 
+address copyNode(address Root) {
+    if (Root == NULL) {
+        return NULL;
+    }
+
+    address newNode = allocate(Root->info);
+    //recursive call
+    newNode->leftNode = copyNode(Root->leftNode);
+    newNode->rightNode = copyNode(Root->rightNode);
+
+    return newNode;
+}
+
 void transform(Tree nbtree, Tree *btree)
 {
-    address curr = nbtree.root;
-    *btree = nbtree;
     (*btree).isBinary = true;
     (*btree).isThreaded = false;
+    (*btree).isAVL = false;
+    (*btree).root = allocate(Info(nbtree.root));
+    (*btree).root = copyNode(nbtree.root);
 }
 
 address leftRotate(address pivot)

@@ -58,6 +58,7 @@ address searchParent(Tree t, infotype check);
 boolean IsEmpty(Tree t);
 address leftRotate(address pivot);
 address rightRotate(address pivot);
+address copyNode(address Root);
 void transform(Tree nbtree, Tree *btree);   //transform NB to B
 void balanceToAVL(address BT, Tree *AVLTree);   //balancing Btree to AVL Tree
 /********************************/
@@ -90,6 +91,7 @@ void listNodes(Tree t);
 
 /******* display *******/
 void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
+void showTreeTypes(int treeType);
 void mainMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void manipulationMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void informationMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);

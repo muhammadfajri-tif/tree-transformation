@@ -68,21 +68,8 @@ void mainMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
     int choice;
 inputMenu:
     system("cls");
-    printf("===== ");
-    if (*treeType == NONBINARYTREE)
-    {
-        printf("Non-Binary Tree");
-    }
-    else if (*treeType == BINARYTREE)
-    {
-        printf("Binary Tree");
-    }
-    else if (*treeType == AVLTREE)
-    {
-        printf("AVL Tree");
-    }
-    printf(" =====\n");
-    printf("\nSelamat datang di program AVL Tree\n");
+    showTreeTypes(*treeType);
+    printf("Selamat datang di program AVL Tree\n");
     printf("Silahkan Pilih Menu yang diinginkan\n");
     printf("1. Manipulasi Tree\n");
     printf("2. Informasi Tree\n");
@@ -154,8 +141,8 @@ void manipulationMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
     int choice;
 inputMenu:
     system("cls");
-    printf("\nSelamat datang di program AVL Tree\n");
-    printf("Silahkan Pilih Menu yang diinginkan\n");
+    showTreeTypes(*treeType);
+    printf("Silahkan Pilih Menu Manipulation yang diinginkan\n");
     printf("1. Insert Node\n");
     printf("2. Delete Node\n");
     printf("3. Update Node\n");
@@ -267,8 +254,8 @@ void informationMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
     int choice;
 inputMenu:
     system("cls");
-    printf("\nSelamat datang di program AVL Tree\n");
-    printf("Silahkan Pilih Menu yang diinginkan\n");
+    showTreeTypes(*treeType);
+    printf("Silahkan Pilih Menu Information yang diinginkan\n");
     printf("1. Traverse\n");
     printf("2. Print Tree Visualization\n");
     printf("3. Tree Details\n");
@@ -595,4 +582,22 @@ inputMenu:
             goto inputNode;
         }
     }
+}
+
+void showTreeTypes(int treeType)
+{
+    printf("===== ");
+    if (treeType == NONBINARYTREE)
+    {
+        printf("\033[0;33mNon-Binary Tree\033[0m");
+    }
+    else if (treeType == BINARYTREE)
+    {
+        printf("\033[0;34mBinary Tree\033[0m");
+    }
+    else if (treeType == AVLTREE)
+    {
+        printf("\033[0;32mAVL Tree\033[0m");
+    }
+    printf(" =====\n\n");
 }
