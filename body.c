@@ -81,33 +81,53 @@ void insert(Tree *t)
 {
     infotype info, parent;
     address parentNode;
-    int i, j;
+    int i, j, treeType;
+    char pesan[100];
+
+    if (!IsBinary(*t))
+    {
+        treeType = NONBINARYTREE;
+    }
+    else if (!IsAVL(*t))
+    {
+        treeType = BINARYTREE;
+    }
+    else
+    {
+        treeType = AVLTREE;
+    }
 
     if (t->isBinary != true || (t->isBinary == true && t->isAVL == false))
     {
-        printf("insert Tree");
+        PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+        printGridUI("Insert Tree", treeType);
+        PrintTree(t->root, 0, t->isBinary);
+        gotoxy(0, 4);
         if (t->root == NULL)
         {
-            printf("\nMasukkan info untuk root = ");
+            printHalfScreen("Masukkan info untuk root = ", false, false);
             scanf(" %c", &info);
             t->root = allocate(info);
         }
-        printf("\nMasukkan jumlah node yang ingin dimasukkan = ");
+        printHalfScreen("Masukkan jumlah node yang ingin dimasukkan = ", t->root == NULL ? true : false, false);
         scanf("%d", &i);
         for (j = 0; j < i; j++)
         {
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
-            printf("===== Input Tree =====\n");
+            printGridUI("Insert Tree", treeType);
             PrintTree(t->root, 0, t->isBinary);
-            printf("\nList node dalam tree: ");
+            gotoxy(0, 4);
+            printHalfScreen("List node dalam tree: ", false, false);
             listNodes(*t);
         inputNODE:
-            printf("\nMasukkan info node baru ke-%d = ", j + 1);
+            sprintf(pesan, "Masukkan info node baru ke-%d = ", j + 1);
+            printHalfScreen(pesan, true, false);
             scanf(" %c", &info);
             if (search(*t, info) == NULL)
             {
             inputParent:
-                printf("Masukkan info parent node baru ke-%d = ", j + 1);
+                sprintf(pesan, "Masukkan info parent node baru ke-%d = ", j + 1);
+                printHalfScreen(pesan, false, false);
                 scanf(" %c", &parent);
                 parentNode = search(*t, parent);
                 if (parentNode != NULL)
@@ -116,7 +136,8 @@ void insert(Tree *t)
                     {
                         if (!LeftThread(parentNode) && LeftSon(parentNode) != NULL && RightThread(parentNode) && RightSon(parentNode) != NULL)
                         {
-                            printf("\nParent dengan info %c sudah memiliki 2 anak!\n", parent);
+                            sprintf(pesan, "Parent dengan info %c sudah memiliki 2 anak!\n", parent);
+                            printHalfScreen(pesan, true, false);
                             goto inputParent;
                         }
                         insertBTNode(t, info, parent);
@@ -125,55 +146,70 @@ void insert(Tree *t)
                     {
                         insertNBTNode(t, info, parent);
                     }
+                    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+                    printGridUI("Insert Tree", treeType);
                     PrintTree(t->root, 0, t->isBinary);
-                    printf("Node dengan info %c berhasil dimasukkan\n", info);
-                    printf("ketik untuk melanjutkan...");
+                    gotoxy(0, 4);
+                    sprintf(pesan, "Node dengan info %c berhasil dimasukkan\n", info);
+                    printHalfScreen(pesan, false, false);
+                    printHalfScreen("ketik untuk melanjutkan...", true, false);
                     PLATFORM_NAME == "windows" ? getch() : getchar();
                 }
                 else
                 {
-                    printf("Parent dengan info %c tidak ditemukan, silahkan masukkan kembali\n", parent);
+                    sprintf(pesan, "Parent dengan info %c tidak ditemukan, silahkan masukkan kembali\n", parent);
+                    printHalfScreen(pesan, true, false);
                     goto inputParent;
                 }
             }
             else
             {
-                printf("\nInfo Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!");
+                printHalfScreen("Info Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!", true, false);
                 goto inputNODE;
             }
         }
     }
     else
     {
+        PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+        printGridUI("Insert Tree", treeType);
+        PrintTree(t->root, 0, t->isBinary);
+        gotoxy(0, 4);
         if (t->root == NULL)
         {
-            printf("\nMasukkan info untuk root = ");
+            printHalfScreen("Masukkan info untuk root = ", false, false);
             scanf(" %c", &info);
             t->root = allocate(info);
         }
-        printf("\nMasukkan jumlah node yang ingin dimasukkan = ");
+        printHalfScreen("Masukkan jumlah node yang ingin dimasukkan = ", t->root == NULL ? true : false, false);
         scanf("%d", &i);
         for (j = 0; j < i; j++)
         {
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
-            printf("===== Input Tree =====\n");
+            printGridUI("Insert Tree", treeType);
             PrintTree(t->root, 0, t->isBinary);
-            printf("\nList node dalam tree : ");
+            gotoxy(0, 4);
+            printHalfScreen("List node dalam tree: ", false, false);
             listNodes(*t);
         inputNode:
-            printf("\nMasukkan info node baru ke-%d = ", j + 1);
+            sprintf(pesan, "Masukkan info node baru ke-%d = ", j + 1);
+            printHalfScreen(pesan, false, false);
             scanf(" %c", &info);
             if (search(*t, info) == NULL)
             {
                 (*t).root = insertAVLNode(t->root, info);
+                PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+                printGridUI("Insert Tree", treeType);
                 PrintTree(t->root, 0, t->isBinary);
-                printf("Node dengan info %c berhasil dimasukkan\n", info);
-                printf("ketik untuk melanjutkan...");
+                gotoxy(0, 4);
+                sprintf(pesan, "Node dengan info %c berhasil dimasukkan\n", info);
+                printHalfScreen(pesan, false, false);
+                printHalfScreen("ketik untuk melanjutkan...", true, false);
                 PLATFORM_NAME == "windows" ? getch() : getchar();
             }
             else
             {
-                printf("\nInfo Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!");
+                printHalfScreen("Info Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!", true, false);
                 goto inputNode;
             }
         }
@@ -183,12 +219,29 @@ void insert(Tree *t)
 void delete(Tree *t)
 {
     infotype info;
+    int treeType;
+    char pesan[50];
+
+    if (!IsBinary(*t))
+    {
+        treeType = NONBINARYTREE;
+    }
+    else if (!IsAVL(*t))
+    {
+        treeType = BINARYTREE;
+    }
+    else
+    {
+        treeType = AVLTREE;
+    }
 deleteNode:
     PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+    printGridUI("Delete Node", treeType);
     PrintTree(t->root, 0, t->isBinary);
-    printf("\nList node :");
+    gotoxy(0, 4);
+    printHalfScreen("List node :", false, false);
     listNodes(*t);
-    printf("\nMasukkan Info Node Yang Ingin Dihapus = ");
+    printHalfScreen("Masukkan Info Node Yang Ingin Dihapus = ", true, false);
     scanf(" %c", &info);
     if (search(*t, info) != NULL)
     {
@@ -204,15 +257,16 @@ deleteNode:
         {
             // delete AVL tree
         }
-        if (t->root != NULL)
-        {
-            PrintTree(t->root, 0, t->isBinary);
-        }
-        printf("Node dengan info %c berhasil dihapus\n", info);
+        PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+        printGridUI("Delete Node", treeType);
+        PrintTree(t->root, 0, t->isBinary);
+        gotoxy(0, 4);
+        sprintf(pesan, "Node dengan info %c berhasil dihapus\n", info);
+        printHalfScreen(pesan, false, false);
     }
     else
     {
-        printf("\nNode Tidak Ditemukan! Masukkan Info Node Yang Benar!\n");
+        printHalfScreen("Node Tidak Ditemukan! Masukkan Info Node Yang Benar!\n", true, false);
         goto deleteNode;
     }
 }
@@ -348,8 +402,8 @@ address deleteBTNode(Tree *t, infotype info)
             }
             else // Jika node yang dihapus merupakan root
             {
-                printf("Tidak bisa menghapus root!\n");
-                printf("\nKetik apapun untuk melanjutkan...");
+                printHalfScreen("Tidak bisa menghapus root!", true, false);
+                printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
                 PLATFORM_NAME == "windows" ? getch() : getchar();
                 return NULL;
             }
@@ -1327,29 +1381,33 @@ void update(Tree *t)
     infotype info, newInfo;
     address curr;
 inputUpdatedNode:
-    printf("\nList node :");
+    printHalfScreen("List node :", true, false);
     listNodes(*t);
-    printf("\nMasukkan Info Node Yang Ingin Diupdate = ");
+    printHalfScreen("Masukkan Info Node Yang Ingin Diupdate = ", true, false);
     scanf(" %c", &info);
     curr = search(*t, info);
     if (curr != NULL)
     {
     inputNewInfo:
-        printf("\nMasukkan Info Baru = ");
+        printHalfScreen("Masukkan Info Baru = ", true, false);
         scanf(" %c", &newInfo);
         if (search(*t, newInfo) == NULL)
         {
             updateNode(t, info, newInfo);
+            PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+            printGridUI("Manipulation Menu", t->isBinary == true ? BINARYTREE : NONBINARYTREE);
+            PrintTree(t->root, 0, t->isBinary);
+            gotoxy(0, 4);
         }
         else
         {
-            printf("\nInfo Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!");
+            printHalfScreen("Info Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!", true, false);
             goto inputNewInfo;
         }
     }
     else
     {
-        printf("\nNode Tidak Ditemukan!");
+        printHalfScreen("Node Tidak Ditemukan!", true, false);
         goto inputUpdatedNode;
     }
 }
