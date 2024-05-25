@@ -11,7 +11,7 @@ void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
     int choice;
 inputMenu:
     *treeType = NONBINARYTREE;
-    system("cls");
+    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     printf("Selamat datang di program AVL Tree\n");
     printf("Pilih cara create tree yang diinginkan:\n");
     printf("1. Create Tree Manual\n");
@@ -67,7 +67,7 @@ void mainMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
 inputMenu:
-    system("cls");
+    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     printGridUI("Main Menu", *treeType);
     PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
 
@@ -145,7 +145,7 @@ void manipulationMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
 inputMenu:
-    system("cls");
+    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     printGridUI("Manipulation Menu", *treeType);
     PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
 
@@ -213,7 +213,7 @@ inputMenu:
         {
             update(tAVL);
         }
-        printHalfScreen("Node berhasil diupdate!", true, false);
+        printHalfScreen("Node berhasil diupdate!", false, false);
         printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
@@ -261,7 +261,7 @@ void informationMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
 inputMenu:
-    system("cls");
+    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     showTreeTypes(*treeType);
     printf("Silahkan Pilih Menu Information yang diinginkan\n");
     printf("1. Traverse\n");
@@ -327,15 +327,27 @@ inputMenu:
 void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
+    
+    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+    printGridUI("Transform Menu", *treeType);
+    PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
+    gotoxy(0, 4);
     if (*treeType == NONBINARYTREE)
     {
-        printf("Akan dilakukan transformasi dari Non-Binary Tree ke Binary Tree\n1. Melanjutkan\n2. Kembali\nPilihanmu = ");
+        printHalfScreen("Akan dilakukan transformasi dari Non-Binary Tree ke Binary Tree.", false, false);
+        printHalfScreen("1. Melanjutkan", true, false);
+        printHalfScreen("2. Kembali", true, false);
+        printHalfScreen("Pilihanmu = ", true, false);
         scanf("%d", &choice);
         if (choice == 1)
         {
             transform(*t, btree);
-            printf("\nTransformasi Non-Binary tree ke Binary Tree berhasil!");
             *treeType = BINARYTREE;
+            PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+            printGridUI("Transform Menu", *treeType);
+            PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
+            gotoxy(0, 4);
+            printHalfScreen("Transformasi Non-Binary tree ke Binary Tree berhasil!", false, false);
         }
         else if (choice == 2)
         {
@@ -343,43 +355,50 @@ void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
         }
         else
         {
-            printf("\nInput yang anda masukkan salah! Mohon input 1 atau 2");
+            printHalfScreen("Input yang anda masukkan salah! Mohon input 1 atau 2", true, false);
         }
     }
     else if (*treeType == BINARYTREE)
     {
-        printf("Akan dilakukan balancing dari Binary Tree ke AVL Tree\n1. Melanjutkan\n2. Kembali\nPilihanmu = ");
+        printHalfScreen("Akan dilakukan transformasi dari Binary Tree ke AVL Tree.", false, false);
+        printHalfScreen("1. Melanjutkan", true, false);
+        printHalfScreen("2. Kembali", true, false);
+        printHalfScreen("Pilihanmu = ", true, false);
         scanf("%d", &choice);
         if (choice == 1)
         {
             tAVL->root = NULL; //delete the previous AVL tree
             tAVL->isBinary = true;
             balanceToAVL(btree->root, tAVL);
-            printf("\nBalancing Binary Tree ke AVL Tree berhasil!");
             *treeType = AVLTREE;
+            PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+            printGridUI("Transform Menu", *treeType);
+            PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
+            gotoxy(0, 4);
+            printHalfScreen("Balancing Binary Tree ke AVL Tree berhasil!", false, false);
         }
         else if (choice == 2)
         {
-            informationMenu(t, btree, tAVL, treeType);
+            manipulationMenu(t, btree, tAVL, treeType);
         }
         else
         {
-            printf("\nInput yang anda masukkan salah! Mohon input 1 atau 2");
-            informationMenu(t, btree, tAVL, treeType);
+            printHalfScreen("Input yang anda masukkan salah! Mohon input 1 atau 2", true, false);
+            manipulationMenu(t, btree, tAVL, treeType);
         }
     }
     else
     {
-        printf("\nTidak dapat dilakukan transformasi lagi, kembali ke menu utama untuk kembali ke Non-Binary Tree atau Binary Tree");
+        printHalfScreen("Tidak dapat dilakukan transformasi lagi, kembali ke menu utama untuk kembali ke Non-Binary Tree atau Binary Tree", true, false);
     }
-    printf("\nKetik apapun untuk melanjutkan...");
+    printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
     PLATFORM_NAME == "windows" ? getch() : getchar();
     mainMenu(t, btree, tAVL, treeType);
 }
 
 void traverseMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
-    system("cls");
+    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     if (*treeType == NONBINARYTREE)
     {
         printf("\n=== Traversal Non Binary Tree ===\n");
@@ -468,7 +487,7 @@ void showTreeDetails(Tree *t, int *treeType)
     address node;
 
 inputMenu:
-    system("cls");
+    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     printf("=== Tree Details ===\n");
     printf("Tree Type: ");
     if (*treeType == NONBINARYTREE)
@@ -509,7 +528,7 @@ inputMenu:
     if (choice == 'y' || choice == 'Y')
     {
     inputNode:
-        system("cls");
+        PLATFORM_NAME == "windows" ? system("cls") : system("clear");
         printf("Masukkan value dari node yang ingin dicari: ");
         scanf(" %c", &info);
         node = search(*t, info);
