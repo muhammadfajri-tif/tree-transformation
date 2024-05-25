@@ -26,7 +26,7 @@ void createTree(Tree *t)
     address newNode;
     infotype info;
 
-    printf("\nMasukkan info untuk root = ");
+    printHalfScreen("Masukkan info untuk root = ", true, false);
     scanf(" %c", &info);
     newNode = allocate(info);
     if (newNode != NULL)
@@ -740,24 +740,23 @@ address insertAVLNode(address root, infotype info)
     return root;
 }
 
-void balanceToAVL(address BT, Tree *AVLTree)
+void balanceToAVL(Tree BTree, address BT, Tree *AVLTree)
 {
     if (BT != NULL && (*AVLTree).isBinary == true)
     {
         (*AVLTree).root = insertAVLNode(Root(*AVLTree), Info(BT));
-        balanceToAVL(LeftSon(BT), AVLTree);
-        balanceToAVL(RightSon(BT), AVLTree);
+        PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+        printGridUI("Node Details", AVLTREE);
+        printf("Binary Tree Asal : \n");
+        PrintTree(BTree.root, 0, BTree.isBinary);
+        printf("\nAVL Tree Hasil Balancing : \n");
+        PrintTree(AVLTree->root, 0, AVLTree->isBinary);
+        gotoxy(0, 3);
+        printHalfScreen("Ketik Apapun Untuk Melanjutkan Animasi...", true, false);
+        PLATFORM_NAME == "windows" ? getch() : getchar();
+        balanceToAVL(BTree, LeftSon(BT), AVLTree);
+        balanceToAVL(BTree, RightSon(BT), AVLTree);
     }
-    else
-    {
-    }
-}
-
-void updateTree(Tree *t, Tree *btree, Tree *tAVL)
-{
-    transform(*t, btree);
-    tAVL->isBinary = true;
-    balanceToAVL(btree->root, tAVL);
 }
 
 void preOrder(Tree t, address node)
@@ -1048,13 +1047,13 @@ void levelOrder(Tree t)
 
 void traverse(Tree t)
 {
-    printf("Pre order: ");
+    printHalfScreen("Pre order: ", true, false);
     preOrder(t, t.root);
-    printf("\nPost order: ");
+    printHalfScreen("Post order: ", true, false);
     postOrder(t, t.root);
-    printf("\nIn order: ");
+    printHalfScreen("In order: ", true, false);
     inOrder(t, t.root);
-    printf("\nLevel order: ");
+    printHalfScreen("Level order: ", true, false);
     levelOrder(t);
 }
 
@@ -1516,7 +1515,8 @@ void printc(char JudulMenu[], char JudulTree[])
 
 void printLine(char line)
 {
-    for (int i = 0; i < WindowsSize.X; i++)
+    int i;
+    for (i = 0; i < WindowsSize.X; i++)
     {
         printf("%c", line);
     }
@@ -1525,7 +1525,8 @@ void printLine(char line)
 
 void printCenterLine(char line, int StartPos)
 {
-    for (int i = StartPos; i < WindowsSize.Y - 1; i++)
+    int i;
+    for (i = StartPos; i < WindowsSize.Y - 1; i++)
     {
         GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
         gotoxy((WindowsSize.X / 2) - 2, i);

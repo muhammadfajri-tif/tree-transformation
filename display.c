@@ -9,15 +9,19 @@
 void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
+    char confirm;
 inputMenu:
     *treeType = NONBINARYTREE;
-    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
-    printf("Selamat datang di program AVL Tree\n");
-    printf("Pilih cara create tree yang diinginkan:\n");
-    printf("1. Create Tree Manual\n");
-    printf("2. Create Default Tree\n");
-    printf("3. Load From File\n");
-    printf("Pilihan: ");
+    system("cls");
+    printGridUI("Create Tree Menu", *treeType);
+
+    gotoxy(0, 4);
+    printHalfScreen("Selamat datang di program AVL Tree", false, false);
+    printHalfScreen("Pilih cara create tree yang diinginkan:", true, false);
+    printHalfScreen("1. Create Tree Manual", true, false);
+    printHalfScreen("2. Create Default Tree", true, false);
+    printHalfScreen("3. Load From File", true, false);
+    printHalfScreen("Pilihan: ", true, false);
     scanf("%d", &choice);
     switch (choice)
     {
@@ -31,32 +35,46 @@ inputMenu:
         (*tAVL).isThreaded = false;
         (*tAVL).isAVL = true;
         (*tAVL).root = NULL;
-        printf("\nPembuatan non-binary tree berhasil");
-        printf("\nKetik apapun untuk melanjutkan...");
+        
+        printHalfScreen("Pembuatan non-binary tree secara manual berhasil", true, false);
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
         mainMenu(t, btree, tAVL, treeType);
         break;
     case 2:
-        defaultTree(t);
-        (*btree).isBinary = true;
-        (*btree).isThreaded = false;
-        (*btree).isAVL = false;
-        (*btree).root = NULL;
-        (*tAVL).isBinary = true;
-        (*tAVL).isThreaded = false;
-        (*tAVL).isAVL = true;
-        (*tAVL).root = NULL;
-        printf("\nPembuatan non-binary tree dengan nodes default berhasil");
-        printf("\nKetik apapun untuk melanjutkan...");
-        PLATFORM_NAME == "windows" ? getch() : getchar();
-        mainMenu(t, btree, tAVL, treeType);
+        gotoxy(0, 4);
+        PrintDefaultTreePreview();
+        gotoxy(0, 10);
+        printHalfScreen("Akan dibuat Non-Binary Tree dengan nilai default seperti visualisasi di samping.", true, false);
+        printHalfScreen("input y untuk konfirmasi: ", true, false);
+        scanf(" %c", &confirm);
+        if(confirm != 'y'){
+            printHalfScreen("Pembuatan default tree dibatalkan!", true, false);
+            printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+            PLATFORM_NAME == "windows" ? getch() : getchar();
+            goto inputMenu;
+        }else{ 
+            defaultTree(t);
+            (*btree).isBinary = true;
+            (*btree).isThreaded = false;
+            (*btree).isAVL = false;
+            (*btree).root = NULL;
+            (*tAVL).isBinary = true;
+            (*tAVL).isThreaded = false;
+            (*tAVL).isAVL = true;
+            (*tAVL).root = NULL;
+            printHalfScreen("Pembuatan non-binary tree dengan nodes default berhasil", true, false);
+            printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+            PLATFORM_NAME == "windows" ? getch() : getchar();
+            mainMenu(t, btree, tAVL, treeType);
+        }
         break;
     case 3:
         /* code */
         break;
     default:
-        printf("\nInput yang anda masukkan salah! Mohon input angka 1-2");
-        printf("\nKetik apapun untuk melanjutkan...");
+        printHalfScreen("Input yang anda masukkan salah! Mohon input angka 1-3", true, false);
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
@@ -261,41 +279,26 @@ void informationMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
 inputMenu:
-    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
-    showTreeTypes(*treeType);
-    printf("Silahkan Pilih Menu Information yang diinginkan\n");
-    printf("1. Traverse\n");
-    printf("2. Print Tree Visualization\n");
-    printf("3. Tree Details\n");
-    printf("4. Back to Main Menu\n");
-    printf("Pilihan: ");
+    system("cls");
+    printGridUI("Information Menu", *treeType);
+    gotoxy(0, 4);
+    PrintTreeVisualization(*t, *btree, *tAVL, *treeType); 
+    gotoxy(0, 4);
+    printHalfScreen("Silahkan Pilih Menu Information yang diinginkan", false, false);
+    printHalfScreen("1. Traverse", true, false);
+    printHalfScreen("2. Tree Details", true, false);
+    printHalfScreen("3. Back to Main Menu", true, false);
+    printHalfScreen("Pilihan: ", true, false);
     scanf("%d", &choice);
     switch (choice)
     {
     case 1:
         traverseMenu(t, btree, tAVL, treeType);
-        printf("\nKetik apapun untuk melanjutkan...");
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
     case 2:
-        if (*treeType == NONBINARYTREE)
-        {
-            PrintTree(Root(*t), 0, (*t).isBinary);
-        }
-        else if (*treeType == BINARYTREE)
-        {
-            PrintTree(Root(*btree), 0, (*btree).isBinary);
-        }
-        else
-        {
-            PrintTree(Root(*tAVL), 0, (*tAVL).isBinary);
-        }
-        printf("\nKetik apapun untuk melanjutkan...");
-        PLATFORM_NAME == "windows" ? getch() : getchar();
-        goto inputMenu;
-        break;
-    case 3:
         if (*treeType == NONBINARYTREE)
         {
             showTreeDetails(t, treeType);
@@ -308,11 +311,11 @@ inputMenu:
         {
             showTreeDetails(tAVL, treeType);
         }
-        printf("\nKetik apapun untuk melanjutkan...");
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
         goto inputMenu;
         break;
-    case 4:
+    case 3:
         mainMenu(t, btree, tAVL, treeType);
         break;
     default:
@@ -345,6 +348,9 @@ void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
             *treeType = BINARYTREE;
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
             printGridUI("Transform Menu", *treeType);
+            printf("Tree Non-Binary Asal : \n");
+            PrintTree(t->root, 0, t->isBinary);
+            printf("\nTree Binary Hasil : \n");
             PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
             gotoxy(0, 4);
             printHalfScreen("Transformasi Non-Binary tree ke Binary Tree berhasil!", false, false);
@@ -369,10 +375,13 @@ void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
         {
             tAVL->root = NULL; //delete the previous AVL tree
             tAVL->isBinary = true;
-            balanceToAVL(btree->root, tAVL);
+            balanceToAVL(*btree, btree->root, tAVL);
             *treeType = AVLTREE;
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
             printGridUI("Transform Menu", *treeType);
+            printf("Tree Binary Asal : \n");
+            PrintTree(btree->root, 0, btree->isBinary);
+            printf("\nTree AVL Hasil : \n");
             PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
             gotoxy(0, 4);
             printHalfScreen("Balancing Binary Tree ke AVL Tree berhasil!", false, false);
@@ -398,26 +407,25 @@ void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 
 void traverseMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
-    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     if (*treeType == NONBINARYTREE)
     {
-        printf("\n=== Traversal Non Binary Tree ===\n");
+        printHalfScreen("=== Traversal Non Binary Tree ===", true, false);
         traverse(*t);
-        printf("\nKetik apapun untuk melanjutkan...");
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
     }
     else if (*treeType == BINARYTREE)
     {
-        printf("\n=== Traversal Binary Tree ===\n");
+        printHalfScreen("=== Traversal Binary Tree ===", true, false);
         traverse(*btree);
-        printf("\nKetik apapun untuk melanjutkan...");
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
     }
     else if (*treeType == AVLTREE)
     {
-        printf("\n=== Traversal AVL Tree ===\n");
+        printHalfScreen("=== Traversal AVL Tree ===", true, false);
         traverse(*tAVL);
-        printf("\nKetik apapun untuk melanjutkan...");
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
     }
     informationMenu(t, btree, tAVL, treeType);
@@ -488,121 +496,135 @@ void showTreeDetails(Tree *t, int *treeType)
 
 inputMenu:
     PLATFORM_NAME == "windows" ? system("cls") : system("clear");
-    printf("=== Tree Details ===\n");
-    printf("Tree Type: ");
+    printGridUI("Tree Details", *treeType);
+    PrintTree(t->root, 0, t->isBinary);
+    gotoxy(0, 3);
+    printHalfScreen("Tree Type: ", true, false);
     if (*treeType == NONBINARYTREE)
     {
-        printf("Non-Binary Tree\n");
+        printf("Non-Binary Tree");
     }
     else if (*treeType == BINARYTREE)
     {
-        printf("Binary Tree\n");
+        printf("Binary Tree");
     }
     else if (*treeType == AVLTREE)
     {
-        printf("AVL Tree\n");
+        printf("AVL Tree");
     }
 
     if (*treeType > NONBINARYTREE)
     {
         if (IsThreaded(*t))
         {
-            printf("Threaded Tree: Yes\n");
+            printHalfScreen("Threaded Tree: Yes", true, false);
         }
         else
         {
-            printf("Threaded Tree: No\n");
+            printHalfScreen("Threaded Tree: No", true, false);
         }
     }
-    printf("Node count: ");
-    printf("%d\n", nodeAmount(*t));
+    printHalfScreen("Node count: ", true, false);
+    printf("%d", nodeAmount(*t));
 
-    printf("Leaf Node count: ");
-    printf("%d\n", leafAmount(*t));
+    printHalfScreen("Leaf Node count: ", true, false);
+    printf("%d", leafAmount(*t));
 
-    printf("Depth: ");
-    printf("%d\n", depth(*t));
+    printHalfScreen("Depth: ", true, false);
+    printf("%d", depth(*t));
 
-    printf("Print Detail Node? (y/n): ");
+    printHalfScreen("Print Detail Node? (y/n): ", true, false);
     scanf(" %c", &choice);
     if (choice == 'y' || choice == 'Y')
     {
     inputNode:
         PLATFORM_NAME == "windows" ? system("cls") : system("clear");
-        printf("Masukkan value dari node yang ingin dicari: ");
+        printGridUI("Node Details", *treeType);
+        PrintTree(t->root, 0, t->isBinary);
+        gotoxy(0, 3);
+        printHalfScreen("Masukkan value dari node yang ingin dicari: ",true,false);
         scanf(" %c", &info);
         node = search(*t, info);
 
         if (node != NULL)
         {
-            printf("Node value: %c\n", Info(node));
+            printHalfScreen("Node value: ", true, false);
+            printf("%c", Info(node));
             if (node == Root(*t))
             {
-                printf("Node parent: NULL (Root node)\n");
+                printHalfScreen("Node parent: NULL (Root node)", true, false);
             }
             else
             {
-                printf("Node parent: %c\n", Info(searchParent(*t, Info(node))));
+                printHalfScreen("Node parent: ",true,false);
+                if(searchParent(*t, Info(node)) == NULL){
+                    printf("NULL (Root node)");
+                }else{
+                    printf("%c", Info(searchParent(*t, Info(node))));
+                
+                }
             }
-            printf(IsBinary(*t) ? "Left Son: " : "First Son: ");
+            printHalfScreen(IsBinary(*t) ? "Left Son: " : "First Son: ", true, false);
             if (LeftSon(node) != NULL)
             {
-                printf("%c\n", Info(LeftSon(node)));
+                printf("%c", Info(LeftSon(node)));
             }
             else
             {
-                printf("NULL\n");
+                printf("NULL");
             }
-            printf(IsBinary(*t) ? "Right Son: " : "Next Brother: ");
+            printHalfScreen(IsBinary(*t) ? "Right Son: " : "Next Brother: ", true, false);
             if (RightSon(node) != NULL)
             {
-                printf("%c\n", Info(RightSon(node)));
+                printf("%c", Info(RightSon(node)));
             }
             else
             {
-                printf("NULL\n");
+                printf("NULL");
             }
             if (*treeType > NONBINARYTREE)
             {
-                printf("Left Thread: ");
+                printHalfScreen("Left Thread: ", true, false);
                 if (LeftThread(node))
                 {
-                    printf("Yes\n");
+                    printf("Yes");
                 }
                 else
                 {
-                    printf("No\n");
+                    printf("No");
                 }
-                printf("Right Thread: ");
+                printHalfScreen("Right Thread: ", true, false);
                 if (RightThread(node))
                 {
-                    printf("Yes\n");
+                    printf("Yes");
                 }
                 else
                 {
-                    printf("No\n");
+                    printf("No");
                 }
             }
             if (*treeType != NONBINARYTREE)
             {
-                printf("Height: %d\n", height(node) - 1);
+                printHalfScreen("Height: ", true, false);
+                printf("%d", height(node) - 1);
             }
-            printf("Level: %d\n", level(*t, Info(node)));
-            printf("Leaf: ");
+            printHalfScreen("Level: ", true, false);
+            printf("%d", level(*t, Info(node)));
+            printHalfScreen("Is Leaf: ", true, false);
             if (isLeaf(*t, node))
             {
-                printf("Yes\n");
+                printf("Yes");
             }
             else
             {
-                printf("No\n");
+                printf("No");
             }
         }
         else
         {
-            printf("Node tidak ditemukan!\n");
+            printHalfScreen("Node tidak ditemukan!", true, false);
         }
-        printf("Apakah anda ingin mencari node yang lain? (y/n)");
+        printHalfScreen("Apakah anda ingin mencari node yang lain? (y/n): ", true, false);
         scanf(" %c", &choice);
         if (choice == 'y' || choice == 'Y')
         {
@@ -627,4 +649,10 @@ void showTreeTypes(int treeType)
         printf("\033[0;32mAVL Tree\033[0m");
     }
     printf(" =====");
+}
+
+void PrintDefaultTreePreview(){
+    Tree t;
+    defaultTree(&t);
+    PrintTree(Root(t), 0, t.isBinary);
 }

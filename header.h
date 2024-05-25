@@ -60,6 +60,7 @@ address insertAVLNode (address root, infotype info);
 void delete(Tree *t);
 address deleteNBNode(Tree *t, infotype info);
 address deleteBTNode(Tree *t, infotype info);
+address deleteAVLNode(Tree *t, infotype info);
 void update(Tree *t);
 void updateNode(Tree *t, infotype info, infotype newInfo);
 address search(Tree t, infotype check);
@@ -69,7 +70,7 @@ address leftRotate(address pivot);
 address rightRotate(address pivot);
 address copyNode(address Root);
 void transform(Tree nbtree, Tree *btree);   //transform NB to B
-void balanceToAVL(address BT, Tree *AVLTree);   //balancing Btree to AVL Tree
+void balanceToAVL(Tree Btree, address BT, Tree *AVLTree);   //balancing Btree to AVL Tree
 /********************************/
 
 /******* traversal tree *******/
@@ -110,6 +111,7 @@ void traverseMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void showTreeDetails(Tree *t, int *treeType);
 void PrintTree(address P, int Level, bool isBinary);
 void PrintTreeVisualization(Tree t, Tree btree, Tree tAVL, int treeType);
+void PrintDefaultTreePreview();
 
 void gotoxy(int x, int y);
 void initSystem();
