@@ -406,7 +406,7 @@ address search(Tree t, infotype check)
         CreateList(&stack);
         push(&stack, NULL);
         address curr;
-        boolean resmi;
+        bool resmi;
 
         curr = t.root;
         resmi = true;
@@ -502,7 +502,7 @@ address searchParent(Tree t, infotype check)
         CreateList(&stack);
         push(&stack, NULL);
         address curr;
-        boolean resmi;
+        bool resmi;
 
         curr = t.root;
         resmi = true;
@@ -587,7 +587,7 @@ address searchParent(Tree t, infotype check)
     }
 }
 
-boolean IsEmpty(Tree t)
+bool IsEmpty(Tree t)
 {
     if (t.root == NULL)
     {
@@ -599,13 +599,15 @@ boolean IsEmpty(Tree t)
     }
 }
 
-address copyNode(address Root) {
-    if (Root == NULL) {
+address copyNode(address Root)
+{
+    if (Root == NULL)
+    {
         return NULL;
     }
 
     address newNode = allocate(Root->info);
-    //recursive call
+    // recursive call
     newNode->leftNode = copyNode(Root->leftNode);
     newNode->rightNode = copyNode(Root->rightNode);
 
@@ -715,7 +717,7 @@ void preOrder(Tree t, address node)
             CreateList(&stack);
             push(&stack, NULL);
             address curr;
-            boolean resmi;
+            bool resmi;
 
             curr = t.root;
             resmi = true;
@@ -779,7 +781,7 @@ void postOrder(Tree t, address node)
             CreateList(&stack);
             push(&stack, NULL);
             address curr;
-            boolean resmi;
+            bool resmi;
 
             curr = t.root;
             resmi = true;
@@ -840,7 +842,7 @@ void inOrder(Tree t, address node)
             CreateList(&stack);
             push(&stack, NULL);
             address curr, parent;
-            boolean resmi;
+            bool resmi;
 
             curr = t.root;
             resmi = true;
@@ -1079,7 +1081,7 @@ void enqueueInOrder(address P, List *Queue)
     }
 }
 
-int max(int a, int b)
+int Max(int a, int b)
 {
     if (a > b)
     {
@@ -1099,11 +1101,11 @@ int height(address n)
     }
     else
     {
-        return 1 + max(height(LeftThread(n) ? NULL : n->leftNode), height(RightThread(n) ? NULL : n->rightNode));
+        return 1 + Max(height(LeftThread(n) ? NULL : n->leftNode), height(RightThread(n) ? NULL : n->rightNode));
     }
 }
 
-boolean isLeaf(Tree t, address n)
+bool isLeaf(Tree t, address n)
 {
     if (t.isBinary == true)
     {
@@ -1136,7 +1138,7 @@ int leafAmount(Tree t)
     CreateList(&stack);
     push(&stack, NULL);
     address curr;
-    boolean resmi;
+    bool resmi;
     int count = 0;
 
     curr = t.root;
@@ -1180,7 +1182,7 @@ int nodeAmount(Tree t)
     push(&stack, NULL);
     address curr;
     int count = 0;
-    boolean resmi;
+    bool resmi;
 
     curr = t.root;
     resmi = true;
@@ -1357,7 +1359,23 @@ void updateNode(Tree *t, infotype info, infotype newInfo)
     Info(search(*t, info)) = newInfo;
 }
 
-void PrintTree(address P, int Level, boolean isBinary)
+void PrintTreeVisualization(Tree t, Tree btree, Tree tAVL, int treeType)
+{
+    if (treeType == NONBINARYTREE)
+    {
+        PrintTree(t.root, 0, false);
+    }
+    else if (treeType == BINARYTREE)
+    {
+        PrintTree(btree.root, 0, true);
+    }
+    else if (treeType == AVLTREE)
+    {
+        PrintTree(tAVL.root, 0, true);
+    }
+}
+
+void PrintTree(address P, int Level, bool isBinary)
 {
     if (P != NULL)
     {
@@ -1387,4 +1405,91 @@ void PrintTree(address P, int Level, boolean isBinary)
             PrintTree(NextBrother(P), Level, isBinary);
         }
     }
+}
+
+void gotoxy(int x, int y)
+{
+    COORD c;
+    c.X = x;
+    c.Y = y;
+    SetConsoleCursorPosition(hConsole, c);
+}
+
+void initSystem()
+{
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    saved_attributes = consoleInfo.wAttributes;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    WindowsSize.X = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    WindowsSize.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+}
+
+void printGridUI(char Pesan[], int treeType)
+{
+    initSystem();
+
+    printCenterLine('|', 2);
+    printc(Pesan, treeType == NONBINARYTREE ? "===== \033[0;33mNon-Binary Tree\033[0m =====" : treeType == BINARYTREE ? "===== \033[0;34mBinary Tree\033[0m ====="
+                                                                                                                      : "===== \033[0;32mAVL Tree\033[0m =====");
+    printLine('-');
+}
+
+void printc(char JudulMenu[], char JudulTree[])
+{
+    int usedPos = (WindowsSize.X - strlen(JudulTree)) / 2 + 5;
+    if (usedPos > 1)
+    {
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        COORD cursorPos = consoleInfo.dwCursorPosition;
+        gotoxy(usedPos, cursorPos.Y + 1);
+    }
+    printf("%s", JudulTree);
+
+    usedPos = (WindowsSize.X - strlen(JudulMenu)) / 2;
+    if (usedPos > 1)
+    {
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        COORD cursorPos = consoleInfo.dwCursorPosition;
+        gotoxy(usedPos, cursorPos.Y + 1);
+    }
+    printf("%s\n", JudulMenu);
+}
+
+void printLine(char line)
+{
+    for (int i = 0; i < WindowsSize.X; i++)
+    {
+        printf("%c", line);
+    }
+    printf("\n");
+}
+
+void printCenterLine(char line, int StartPos)
+{
+    for (int i = StartPos; i < WindowsSize.Y - 1; i++)
+    {
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        gotoxy((WindowsSize.X / 2) - 2, i);
+        printf("%c", line);
+    }
+    gotoxy(0, 0);
+}
+
+void printHalfScreen(char Pesan[], bool isNewLine, bool cancelEnter)
+{
+    int usedPos = (WindowsSize.X) / 2;
+    if (usedPos > 1)
+    {
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        int cursorPos = consoleInfo.dwCursorPosition.Y;
+        if (isNewLine && !cancelEnter)
+            cursorPos++;
+        if (cancelEnter)
+        {
+            cursorPos--;
+        }
+        gotoxy(usedPos, cursorPos);
+    }
+    printf("%s", Pesan);
 }
