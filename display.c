@@ -437,11 +437,15 @@ void switchTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
     if (*treeType == BINARYTREE)
     {
     invalidInput:
-        printf("Akan dilakukan switch kembali ke Non-Binary Tree sebelum dilakukan transformasi\n1. Melanjutkan\n2. Kembali\nPilihanmu = ");
+        printHalfScreen("(Rollback akan kembali ke bentuk dan state tree sebelumnya)", true, false);
+        printHalfScreen("Akan dilakukan Rollback ke Non-Binary Tree sebelum dilakukan transformasi", true, false);
+        printHalfScreen("1. Melanjutkan", true, false);
+        printHalfScreen("2. Kembali", true, false);
+        printHalfScreen("Pilihanmu = ", true, false);
         scanf("%d", &choice);
         if (choice == 1)
         {
-            printf("\nSwitch ke non-binary tree berhasil!");
+            printHalfScreen("\nSwitch ke non-binary tree berhasil!", true, false);
             *treeType = NONBINARYTREE;
         }
         else if (choice == 2)
@@ -450,8 +454,8 @@ void switchTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
         }
         else
         {
-            printf("\nInput yang anda masukkan salah! Mohon input 1 atau 2");
-            printf("\nKetik apapun untuk melanjutkan...");
+            printHalfScreen("\nInput yang anda masukkan salah! Mohon input 1 atau 2", true, false);
+            printHalfScreen("\nKetik apapun untuk melanjutkan...", true, false);
             PLATFORM_NAME == "windows" ? getch() : getchar();
             goto invalidInput;
         }
@@ -460,17 +464,21 @@ void switchTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
     else if (*treeType == AVLTREE)
     {
     input:
-        printf("Silahkan pilih mau switch ke Tree mana. (switch ini akan kembali ke bentuk dan state tree sebelumnya sebelum dilakukan transformasi/balancing)\n");
-        printf("1. Non-Binary Tree\n2. Binary Tree\n3. Kembali ke main menu\nPilihanmu = ");
+        printHalfScreen("(Rollback akan kembali ke bentuk dan state tree sebelumnya)", true, false);
+        printHalfScreen("Silahkan pilih jenis tree untuk dilakukan Rollback.", true, false);
+        printHalfScreen("1. Non-Binary Tree", true, false);
+        printHalfScreen("2. Binary Tree", true, false);
+        printHalfScreen("3. Kembali ke main menu", true, false);
+        printHalfScreen("Pilihanmu = ", true, false);
         scanf("%d", &choice);
         if (choice == 1)
         {
-            printf("\nSwitch ke non-binary berhasil!");
+            printHalfScreen("Switch ke non-binary berhasil!", true, false);
             *treeType = NONBINARYTREE;
         }
         else if (choice == 2)
         {
-            printf("\nSwitch ke binary tree berhasil!");
+            printHalfScreen("Switch ke binary tree berhasil!", true, false);
             *treeType = BINARYTREE;
         }
         else if (choice == 3)
@@ -479,8 +487,8 @@ void switchTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
         }
         else
         {
-            printf("\nInput yang anda masukkan salah! Mohon input 1-3");
-            printf("\nKetik apapun untuk melanjutkan...");
+            printHalfScreen("\nInput yang anda masukkan salah! Mohon input 1-3", true, false);
+            printHalfScreen("\nKetik apapun untuk melanjutkan...", true, false);
             PLATFORM_NAME == "windows" ? getch() : getchar();
             goto input;
         }
