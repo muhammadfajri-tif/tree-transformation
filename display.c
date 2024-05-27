@@ -73,7 +73,7 @@ inputMenu:
         break;
     case 3:
         char filename[30];
-        printf("Masukkan nama file (tekan enter untuk memuat dari default file): ");
+        printHalfScreen("Masukkan nama file (tekan enter untuk memuat dari default file): ", true, false);
         getchar();
         fgets(filename, 30, stdin);
         filename[strcspn(filename, "\r\n")] = 0; // remove newline
@@ -84,8 +84,8 @@ inputMenu:
         (*tAVL).isBinary = true;
         (*tAVL).isAVL = true;
         (*tAVL).root = NULL;
-        printf("\nKetik apapun untuk melanjutkan...");
-        PLATFORM_NAME == "windows" ? getchar() : getchar();
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+        PLATFORM_NAME == "windows" ? getch() : getchar();
         mainMenu(t, btree, tAVL, treeType);
         break;
     default:
@@ -130,13 +130,15 @@ inputMenu:
         break;
     case 3:
         char filename[30];
-        printf("Masukkan nama file (tekan enter untuk menyimpan ke default file): ");
+        printHalfScreen("Masukkan nama file (tekan enter untuk memuat dari default file): ", true, false);
         getchar();
         fgets(filename, 30, stdin);
         filename[strcspn(filename, "\r\n")] = 0; // remove newline
         if (fileExists(filename))
         {
-            printf("\033[1;33m[WARN]\t\033[1;0mSudah Terdapat data pada file '%s'. Menyimpan pada file ini akan mengakibatkan data sebelumnya terhapus. Apakah anda akan menyimpannya? (y/n)", filename);
+            char bufferMessage[200] = "\033[1;33m[WARN]\t\033[1;0mSudah Terdapat data pada file '";
+            strcat(strcat(bufferMessage, filename), "'. Menyimpan pada file ini akan mengakibatkan data sebelumnya terhapus. Apakah anda akan menyimpannya? (y/n) ");
+            printHalfScreen(bufferMessage, true, false);
             if ((PLATFORM_NAME == "windows" ? getchar() : getchar()) == 'y')
             {
                 fclose(accessFile(filename, "w"));
