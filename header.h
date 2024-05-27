@@ -1,6 +1,8 @@
 #ifndef header_H
 #define header_H
-#include "includes/boolean.h"
+// #include "includes/bool.h"
+#include <stdbool.h>
+#include <windows.h>
 
 #define Root(P) (P).root
 #define IsBinary(P) (P).isBinary
@@ -26,17 +28,24 @@ typedef struct eNode {
     infotype info;          
     address leftNode;       
     address rightNode;       
-    boolean leftThread;
-    boolean rightThread;
+    bool leftThread;
+    bool rightThread;
 } Node;
 
 //typedef untuk tree
 typedef struct {
     address root;      /**< Pointer to the root node of the tree. */
-    boolean isBinary;
-    boolean isThreaded;
-    boolean isAVL;
+    bool isBinary;
+    bool isThreaded;
+    bool isAVL;
 } Tree;
+
+// Variabel global untuk keperluan UI
+HANDLE hConsole;
+CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+WORD saved_attributes;
+CONSOLE_SCREEN_BUFFER_INFO csbi;
+COORD WindowsSize;
 
 #include "stack/stack.c"
 
@@ -51,15 +60,17 @@ address insertAVLNode (address root, infotype info);
 void delete(Tree *t);
 address deleteNBNode(Tree *t, infotype info);
 address deleteBTNode(Tree *t, infotype info);
+address deleteAVLNode(Tree *t, infotype info);
 void update(Tree *t);
 void updateNode(Tree *t, infotype info, infotype newInfo);
 address search(Tree t, infotype check);
 address searchParent(Tree t, infotype check);
-boolean IsEmpty(Tree t);
+bool IsEmpty(Tree t);
 address leftRotate(address pivot);
 address rightRotate(address pivot);
+address copyNode(address Root);
 void transform(Tree nbtree, Tree *btree);   //transform NB to B
-void balanceToAVL(address BT, Tree *AVLTree);   //balancing Btree to AVL Tree
+void balanceToAVL(Tree Btree, address BT, Tree *AVLTree);   //balancing Btree to AVL Tree
 /********************************/
 
 /******* traversal tree *******/
@@ -78,9 +89,9 @@ void enqueueInOrder(address P, List *Queue);
 
 /******* operasi lainnya *******/
 int level(Tree t, infotype info);
-int max(int a, int b);
+int Max(int a, int b);
 int height(address n);
-boolean isLeaf(Tree t, address n);
+bool isLeaf(Tree t, address n);
 int leafAmount(Tree t);
 int nodeAmount(Tree t);
 int depth(Tree t);
@@ -90,6 +101,7 @@ void listNodes(Tree t);
 
 /******* display *******/
 void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
+void showTreeTypes(int treeType);
 void mainMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void manipulationMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void informationMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
@@ -97,7 +109,17 @@ void switchTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void traverseMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void showTreeDetails(Tree *t, int *treeType);
-void PrintTree(address P, int Level, boolean isBinary);
+void PrintTree(address P, int Level, bool isBinary);
+void PrintTreeVisualization(Tree t, Tree btree, Tree tAVL, int treeType);
+void PrintDefaultTreePreview();
+
+void gotoxy(int x, int y);
+void initSystem();
+void printGridUI(char Pesan[], int treeType);
+void printc(char JudulMenu[], char JudulTree[]);
+void printLine(char line);
+void printCenterLine(char line, int StartPos);
+void printHalfScreen(char Pesan[], bool isNewLine, bool cancelEnter);
 /*********************/
 
 #endif

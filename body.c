@@ -26,7 +26,7 @@ void createTree(Tree *t)
     address newNode;
     infotype info;
 
-    printf("\nMasukkan info untuk root = ");
+    printHalfScreen("Masukkan info untuk root = ", true, false);
     scanf(" %c", &info);
     newNode = allocate(info);
     if (newNode != NULL)
@@ -70,12 +70,6 @@ void insertBTNode(Tree *t, infotype info, infotype parent)
         {
             RightSon(parentNode) = allocate(info);
         }
-
-        if (IsThreaded(*t))
-        {
-            createThread(t); // Update Thread
-        }
-        
     }
     else
     {
@@ -86,41 +80,64 @@ void insertBTNode(Tree *t, infotype info, infotype parent)
 void insert(Tree *t)
 {
     infotype info, parent;
-    int i, j;
+    address parentNode;
+    int i, j, treeType;
+    char pesan[100];
 
-    if (t->isBinary != true || t->isBinary == true && t->isAVL == false)
+    if (!IsBinary(*t))
     {
-        printf("insert Tree");
+        treeType = NONBINARYTREE;
+    }
+    else if (!IsAVL(*t))
+    {
+        treeType = BINARYTREE;
+    }
+    else
+    {
+        treeType = AVLTREE;
+    }
+
+    if (t->isBinary != true || (t->isBinary == true && t->isAVL == false))
+    {
+        PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+        printGridUI("Insert Tree", treeType);
+        PrintTree(t->root, 0, t->isBinary);
+        gotoxy(0, 4);
         if (t->root == NULL)
         {
-            printf("\nMasukkan info untuk root = ");
+            printHalfScreen("Masukkan info untuk root = ", false, false);
             scanf(" %c", &info);
             t->root = allocate(info);
         }
-        printf("\nMasukkan jumlah node yang ingin dimasukkan = ");
+        printHalfScreen("Masukkan jumlah node yang ingin dimasukkan = ", t->root == NULL ? true : false, false);
         scanf("%d", &i);
         for (j = 0; j < i; j++)
         {
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
-            printf("===== Input Tree =====\n");
+            printGridUI("Insert Tree", treeType);
             PrintTree(t->root, 0, t->isBinary);
-            printf("\nList node dalam tree: ");
+            gotoxy(0, 4);
+            printHalfScreen("List node dalam tree: ", false, false);
             listNodes(*t);
         inputNODE:
-            printf("\nMasukkan info node baru ke-%d = ", j + 1);
+            sprintf(pesan, "Masukkan info node baru ke-%d = ", j + 1);
+            printHalfScreen(pesan, true, false);
             scanf(" %c", &info);
             if (search(*t, info) == NULL)
             {
             inputParent:
-                printf("Masukkan info parent node baru ke-%d = ", j + 1);
+                sprintf(pesan, "Masukkan info parent node baru ke-%d = ", j + 1);
+                printHalfScreen(pesan, false, false);
                 scanf(" %c", &parent);
-                if (search(*t, parent) != NULL)
+                parentNode = search(*t, parent);
+                if (parentNode != NULL)
                 {
                     if (t->isBinary == true)
                     {
-                        if (LeftSon(search(*t, parent)) != NULL && RightSon(search(*t, parent)) != NULL)
+                        if (!LeftThread(parentNode) && LeftSon(parentNode) != NULL && RightThread(parentNode) && RightSon(parentNode) != NULL)
                         {
-                            printf("\nParent dengan info %c sudah memiliki 2 anak!\n", parent);
+                            sprintf(pesan, "Parent dengan info %c sudah memiliki 2 anak!\n", parent);
+                            printHalfScreen(pesan, true, false);
                             goto inputParent;
                         }
                         insertBTNode(t, info, parent);
@@ -129,55 +146,70 @@ void insert(Tree *t)
                     {
                         insertNBTNode(t, info, parent);
                     }
+                    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+                    printGridUI("Insert Tree", treeType);
                     PrintTree(t->root, 0, t->isBinary);
-                    printf("Node dengan info %c berhasil dimasukkan\n", info);
-                    printf("ketik untuk melanjutkan...");
+                    gotoxy(0, 4);
+                    sprintf(pesan, "Node dengan info %c berhasil dimasukkan\n", info);
+                    printHalfScreen(pesan, false, false);
+                    printHalfScreen("ketik untuk melanjutkan...", true, false);
                     PLATFORM_NAME == "windows" ? getch() : getchar();
                 }
                 else
                 {
-                    printf("Parent dengan info %c tidak ditemukan, silahkan masukkan kembali\n", parent);
+                    sprintf(pesan, "Parent dengan info %c tidak ditemukan, silahkan masukkan kembali\n", parent);
+                    printHalfScreen(pesan, true, false);
                     goto inputParent;
                 }
             }
             else
             {
-                printf("\nInfo Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!");
+                printHalfScreen("Info Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!", true, false);
                 goto inputNODE;
             }
         }
     }
     else
     {
+        PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+        printGridUI("Insert Tree", treeType);
+        PrintTree(t->root, 0, t->isBinary);
+        gotoxy(0, 4);
         if (t->root == NULL)
         {
-            printf("\nMasukkan info untuk root = ");
+            printHalfScreen("Masukkan info untuk root = ", false, false);
             scanf(" %c", &info);
             t->root = allocate(info);
         }
-        printf("\nMasukkan jumlah node yang ingin dimasukkan = ");
+        printHalfScreen("Masukkan jumlah node yang ingin dimasukkan = ", t->root == NULL ? true : false, false);
         scanf("%d", &i);
         for (j = 0; j < i; j++)
         {
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
-            printf("===== Input Tree =====\n");
+            printGridUI("Insert Tree", treeType);
             PrintTree(t->root, 0, t->isBinary);
-            printf("\nList node dalam tree : ");
+            gotoxy(0, 4);
+            printHalfScreen("List node dalam tree: ", false, false);
             listNodes(*t);
         inputNode:
-            printf("\nMasukkan info node baru ke-%d = ", j + 1);
+            sprintf(pesan, "Masukkan info node baru ke-%d = ", j + 1);
+            printHalfScreen(pesan, false, false);
             scanf(" %c", &info);
             if (search(*t, info) == NULL)
             {
                 (*t).root = insertAVLNode(t->root, info);
+                PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+                printGridUI("Insert Tree", treeType);
                 PrintTree(t->root, 0, t->isBinary);
-                printf("Node dengan info %c berhasil dimasukkan\n", info);
-                printf("ketik untuk melanjutkan...");
+                gotoxy(0, 4);
+                sprintf(pesan, "Node dengan info %c berhasil dimasukkan\n", info);
+                printHalfScreen(pesan, false, false);
+                printHalfScreen("ketik untuk melanjutkan...", true, false);
                 PLATFORM_NAME == "windows" ? getch() : getchar();
             }
             else
             {
-                printf("\nInfo Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!");
+                printHalfScreen("Info Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!", true, false);
                 goto inputNode;
             }
         }
@@ -187,12 +219,29 @@ void insert(Tree *t)
 void delete(Tree *t)
 {
     infotype info;
+    int treeType;
+    char pesan[50];
+
+    if (!IsBinary(*t))
+    {
+        treeType = NONBINARYTREE;
+    }
+    else if (!IsAVL(*t))
+    {
+        treeType = BINARYTREE;
+    }
+    else
+    {
+        treeType = AVLTREE;
+    }
 deleteNode:
     PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+    printGridUI("Delete Node", treeType);
     PrintTree(t->root, 0, t->isBinary);
-    printf("\nList node :");
+    gotoxy(0, 4);
+    printHalfScreen("List node :", false, false);
     listNodes(*t);
-    printf("\nMasukkan Info Node Yang Ingin Dihapus = ");
+    printHalfScreen("Masukkan Info Node Yang Ingin Dihapus = ", true, false);
     scanf(" %c", &info);
     if (search(*t, info) != NULL)
     {
@@ -208,15 +257,16 @@ deleteNode:
         {
             // delete AVL tree
         }
-        if (t->root != NULL)
-        {
-            PrintTree(t->root, 0, t->isBinary);
-        }
-        printf("Node dengan info %c berhasil dihapus\n", info);
+        PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+        printGridUI("Delete Node", treeType);
+        PrintTree(t->root, 0, t->isBinary);
+        gotoxy(0, 4);
+        sprintf(pesan, "Node dengan info %c berhasil dihapus\n", info);
+        printHalfScreen(pesan, false, false);
     }
     else
     {
-        printf("\nNode Tidak Ditemukan! Masukkan Info Node Yang Benar!\n");
+        printHalfScreen("Node Tidak Ditemukan! Masukkan Info Node Yang Benar!\n", true, false);
         goto deleteNode;
     }
 }
@@ -228,9 +278,10 @@ address deleteNBNode(Tree *t, infotype info)
     if (curr != NULL)
     {
         linkedNodes = searchParent(*t, info);
-        if (linkedNodes->leftNode->info == info)
+        if (linkedNodes->leftNode->info == info) // Jika merupakan left node/first son
         {
-            linkedNodes->leftNode = NULL;
+            linkedNodes->leftNode = NextBrother(curr);
+            NextBrother(curr) = NULL;
             free(curr);
             return curr;
         }
@@ -241,7 +292,8 @@ address deleteNBNode(Tree *t, infotype info)
             {
                 linkedNodes = linkedNodes->rightNode;
             }
-            linkedNodes->rightNode = NULL;
+            linkedNodes->rightNode = NextBrother(curr);
+            NextBrother(curr) = NULL;
             free(curr);
             return curr;
         }
@@ -250,22 +302,134 @@ address deleteNBNode(Tree *t, infotype info)
 
 address deleteBTNode(Tree *t, infotype info)
 {
-    address curr, parent;
-    curr = search(*t, info);
-    if (curr != NULL)
+    if (IsThreaded(*t))
     {
-        parent = searchParent(*t, info);
-        if (LeftSon(parent) != NULL && Info(LeftSon(parent)) == info)
+        address current, currentParent, node, successor, nodeParent, successorParent;
+        List Queue;
+        CreateList(&Queue);
+        enqueueInOrder(Root(*t), &Queue);
+        push(&Queue, NULL);
+        node = search(*t, info);
+        successor = Info(Search(Queue, node)->next);
+        if (node != NULL)
         {
-            LeftSon(parent) = NULL;
-            free(curr);
-            return curr;
+            if (node != Root(*t)) // Jika node yang dihapus bukan root
+            {
+                nodeParent = searchParent(*t, info);
+                if (!isLeaf(*t, node))
+                {
+                    if (Info(LeftSon(nodeParent)) == info) // Jika merupakan left son
+                    {
+                        if (!RightThread(node) && RightSon(node) != NULL) // Jika memiliki right son
+                        {
+                            if (!LeftThread(node) && LeftSon(node) != NULL) // Jika memiliki left son
+                            {
+                                LeftSon(RightSon(node)) = LeftSon(node);
+                                LeftSon(node) = NULL;
+                            }
+                            LeftSon(nodeParent) = RightSon(node);
+                            RightSon(node) = NULL;
+                            free(node);
+                            return node;
+                        }
+                        else // Jika tidak memiliki right son (thread)
+                        {
+                            LeftSon(nodeParent) = LeftSon(node);
+                            LeftSon(node) = NULL;
+                            RightSon(node) = NULL;
+                            free(node);
+                            return node;
+                        }
+                    }
+                    else // Jika merupakan right son
+                    {
+                        if (!RightThread(node) && RightSon(node) != NULL) // Jika memiliki right son
+                        {
+                            if (!LeftThread(node) && LeftSon(node) != NULL) // Jika memiliki left son
+                            {
+                                LeftSon(RightSon(node)) = LeftSon(node);
+                                LeftSon(node) = NULL;
+                            }
+                            RightSon(nodeParent) = RightSon(node);
+                            RightSon(node) = NULL;
+                            free(node);
+                            return node;
+                        }
+                        else // Jika tidak memiliki right son (thread)
+                        {
+                            if (successor != Root(*t))
+                            {
+                                successorParent = searchParent(*t, Info(successor));
+                                if (successor == LeftSon(successorParent))
+                                {
+                                    LeftSon(successorParent) = LeftSon(successor);
+                                }
+                                else if (successor == RightSon(successorParent))
+                                {
+                                    RightSon(successorParent) = LeftSon(successor);
+                                }
+                                LeftSon(successor) = LeftSon(node);
+                                RightSon(nodeParent) = successor;
+                                LeftSon(node) = NULL;
+                                free(node);
+                                return node;
+                            }
+                            else
+                            {
+                                RightSon(nodeParent) = LeftSon(node);
+                                LeftSon(node) = NULL;
+                                free(node);
+                                return node;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (Info(LeftSon(nodeParent)) == info)
+                    {
+                        LeftSon(nodeParent) = NULL;
+                        free(node);
+                        return node;
+                    }
+                    else
+                    {
+                        RightSon(nodeParent) = NULL;
+                        free(node);
+                        return node;
+                    }
+                }
+            }
+            else // Jika node yang dihapus merupakan root
+            {
+                printHalfScreen("Tidak bisa menghapus root!", true, false);
+                printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+                PLATFORM_NAME == "windows" ? getch() : getchar();
+                return NULL;
+            }
         }
-        else
+
+        createThread(t); // Update Thread
+    }
+    else
+    {
+        address node, nodeParent;
+        node = search(*t, info);
+        if (node != NULL)
         {
-            RightSon(parent) = NULL;
-            free(curr);
-            return curr;
+            nodeParent = searchParent(*t, info);
+            if (LeftSon(nodeParent) != NULL && Info(LeftSon(nodeParent)) == info)
+            {
+                LeftSon(nodeParent) = NULL;
+                free(node);
+                return node;
+            }
+            else
+            {
+                RightSon(nodeParent) = NULL;
+                free(node);
+                return node;
+            }
         }
     }
 }
@@ -296,7 +460,7 @@ address search(Tree t, infotype check)
         CreateList(&stack);
         push(&stack, NULL);
         address curr;
-        boolean resmi;
+        bool resmi;
 
         curr = t.root;
         resmi = true;
@@ -344,7 +508,7 @@ address search(Tree t, infotype check)
             }
             while (current != NULL || Queue.First != NULL)
             {
-                if (LeftSon(current) != NULL)
+                if (!LeftThread(current) && LeftSon(current) != NULL)
                 {
                     if (Info(LeftSon(current)) == check)
                     {
@@ -356,7 +520,7 @@ address search(Tree t, infotype check)
                     }
                 }
 
-                if (RightSon(current) != NULL)
+                if (!RightThread(current) && RightSon(current) != NULL)
                 {
                     if (Info(RightSon(current)) == check)
                     {
@@ -377,8 +541,9 @@ address search(Tree t, infotype check)
                     current = NULL;
                 }
             }
+
+            return NULL;
         }
-        return NULL;
     }
 }
 
@@ -391,7 +556,7 @@ address searchParent(Tree t, infotype check)
         CreateList(&stack);
         push(&stack, NULL);
         address curr;
-        boolean resmi;
+        bool resmi;
 
         curr = t.root;
         resmi = true;
@@ -404,14 +569,14 @@ address searchParent(Tree t, infotype check)
                     return pull(&stack); // return parent
                 }
             }
-            if (!LeftThread(curr) && FirstSon(curr) != NULL && resmi)
+            if (FirstSon(curr) != NULL && resmi)
             {
                 push(&stack, curr);
                 curr = FirstSon(curr);
             }
             else
             {
-                if (!LeftThread(curr) && FirstSon(curr) != NULL)
+                if (NextBrother(curr) != NULL)
                 {
                     curr = NextBrother(curr);
                     resmi = true;
@@ -476,7 +641,7 @@ address searchParent(Tree t, infotype check)
     }
 }
 
-boolean IsEmpty(Tree t)
+bool IsEmpty(Tree t)
 {
     if (t.root == NULL)
     {
@@ -488,12 +653,28 @@ boolean IsEmpty(Tree t)
     }
 }
 
+address copyNode(address Root)
+{
+    if (Root == NULL)
+    {
+        return NULL;
+    }
+
+    address newNode = allocate(Root->info);
+    // recursive call
+    newNode->leftNode = copyNode(Root->leftNode);
+    newNode->rightNode = copyNode(Root->rightNode);
+
+    return newNode;
+}
+
 void transform(Tree nbtree, Tree *btree)
 {
-    address curr = nbtree.root;
-    *btree = nbtree;
     (*btree).isBinary = true;
     (*btree).isThreaded = false;
+    (*btree).isAVL = false;
+    (*btree).root = allocate(Info(nbtree.root));
+    (*btree).root = copyNode(nbtree.root);
 }
 
 address leftRotate(address pivot)
@@ -559,24 +740,23 @@ address insertAVLNode(address root, infotype info)
     return root;
 }
 
-void balanceToAVL(address BT, Tree *AVLTree)
+void balanceToAVL(Tree BTree, address BT, Tree *AVLTree)
 {
     if (BT != NULL && (*AVLTree).isBinary == true)
     {
         (*AVLTree).root = insertAVLNode(Root(*AVLTree), Info(BT));
-        balanceToAVL(LeftSon(BT), AVLTree);
-        balanceToAVL(RightSon(BT), AVLTree);
+        PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+        printGridUI("Node Details", AVLTREE);
+        printf("Binary Tree Asal : \n");
+        PrintTree(BTree.root, 0, BTree.isBinary);
+        printf("\nAVL Tree Hasil Balancing : \n");
+        PrintTree(AVLTree->root, 0, AVLTree->isBinary);
+        gotoxy(0, 3);
+        printHalfScreen("Ketik Apapun Untuk Melanjutkan Animasi...", true, false);
+        PLATFORM_NAME == "windows" ? getch() : getchar();
+        balanceToAVL(BTree, LeftSon(BT), AVLTree);
+        balanceToAVL(BTree, RightSon(BT), AVLTree);
     }
-    else
-    {
-    }
-}
-
-void updateTree(Tree *t, Tree *btree, Tree *tAVL)
-{
-    transform(*t, btree);
-    tAVL->isBinary = true;
-    balanceToAVL(btree->root, tAVL);
 }
 
 void preOrder(Tree t, address node)
@@ -590,7 +770,7 @@ void preOrder(Tree t, address node)
             CreateList(&stack);
             push(&stack, NULL);
             address curr;
-            boolean resmi;
+            bool resmi;
 
             curr = t.root;
             resmi = true;
@@ -607,7 +787,7 @@ void preOrder(Tree t, address node)
                 }
                 else
                 {
-                    if (!RightThread(curr) &&NextBrother(curr) != NULL)
+                    if (!RightThread(curr) && NextBrother(curr) != NULL)
                     {
                         curr = NextBrother(curr);
                         resmi = true;
@@ -654,7 +834,7 @@ void postOrder(Tree t, address node)
             CreateList(&stack);
             push(&stack, NULL);
             address curr;
-            boolean resmi;
+            bool resmi;
 
             curr = t.root;
             resmi = true;
@@ -715,7 +895,7 @@ void inOrder(Tree t, address node)
             CreateList(&stack);
             push(&stack, NULL);
             address curr, parent;
-            boolean resmi;
+            bool resmi;
 
             curr = t.root;
             resmi = true;
@@ -867,13 +1047,13 @@ void levelOrder(Tree t)
 
 void traverse(Tree t)
 {
-    printf("Pre order: ");
+    printHalfScreen("Pre order: ", true, false);
     preOrder(t, t.root);
-    printf("\nPost order: ");
+    printHalfScreen("Post order: ", true, false);
     postOrder(t, t.root);
-    printf("\nIn order: ");
+    printHalfScreen("In order: ", true, false);
     inOrder(t, t.root);
-    printf("\nLevel order: ");
+    printHalfScreen("Level order: ", true, false);
     levelOrder(t);
 }
 
@@ -954,7 +1134,7 @@ void enqueueInOrder(address P, List *Queue)
     }
 }
 
-int max(int a, int b)
+int Max(int a, int b)
 {
     if (a > b)
     {
@@ -974,15 +1154,15 @@ int height(address n)
     }
     else
     {
-        return 1 + max(height(LeftThread(n) ? NULL : n->leftNode), height(RightThread(n) ? NULL : n->rightNode));
+        return 1 + Max(height(LeftThread(n) ? NULL : n->leftNode), height(RightThread(n) ? NULL : n->rightNode));
     }
 }
 
-boolean isLeaf(Tree t, address n)
+bool isLeaf(Tree t, address n)
 {
     if (t.isBinary == true)
     {
-        if ((LeftThread(n) && RightThread(n)) || (LeftSon(n) == NULL && RightSon(n) == NULL))
+        if (((LeftThread(n) || LeftSon(n) == NULL) && (RightThread(n) || RightSon(n) == NULL)))
         {
             return true;
         }
@@ -1011,7 +1191,7 @@ int leafAmount(Tree t)
     CreateList(&stack);
     push(&stack, NULL);
     address curr;
-    boolean resmi;
+    bool resmi;
     int count = 0;
 
     curr = t.root;
@@ -1055,7 +1235,7 @@ int nodeAmount(Tree t)
     push(&stack, NULL);
     address curr;
     int count = 0;
-    boolean resmi;
+    bool resmi;
 
     curr = t.root;
     resmi = true;
@@ -1200,29 +1380,33 @@ void update(Tree *t)
     infotype info, newInfo;
     address curr;
 inputUpdatedNode:
-    printf("\nList node :");
+    printHalfScreen("List node :", true, false);
     listNodes(*t);
-    printf("\nMasukkan Info Node Yang Ingin Diupdate = ");
+    printHalfScreen("Masukkan Info Node Yang Ingin Diupdate = ", true, false);
     scanf(" %c", &info);
     curr = search(*t, info);
     if (curr != NULL)
     {
     inputNewInfo:
-        printf("\nMasukkan Info Baru = ");
+        printHalfScreen("Masukkan Info Baru = ", true, false);
         scanf(" %c", &newInfo);
         if (search(*t, newInfo) == NULL)
         {
             updateNode(t, info, newInfo);
+            PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+            printGridUI("Manipulation Menu", t->isBinary == true ? BINARYTREE : NONBINARYTREE);
+            PrintTree(t->root, 0, t->isBinary);
+            gotoxy(0, 4);
         }
         else
         {
-            printf("\nInfo Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!");
+            printHalfScreen("Info Node Yang Anda Input Sudah Ada! Mohon Input Info Node Yang Unik!", true, false);
             goto inputNewInfo;
         }
     }
     else
     {
-        printf("\nNode Tidak Ditemukan!");
+        printHalfScreen("Node Tidak Ditemukan!", true, false);
         goto inputUpdatedNode;
     }
 }
@@ -1232,7 +1416,23 @@ void updateNode(Tree *t, infotype info, infotype newInfo)
     Info(search(*t, info)) = newInfo;
 }
 
-void PrintTree(address P, int Level, boolean isBinary)
+void PrintTreeVisualization(Tree t, Tree btree, Tree tAVL, int treeType)
+{
+    if (treeType == NONBINARYTREE)
+    {
+        PrintTree(t.root, 0, false);
+    }
+    else if (treeType == BINARYTREE)
+    {
+        PrintTree(btree.root, 0, true);
+    }
+    else if (treeType == AVLTREE)
+    {
+        PrintTree(tAVL.root, 0, true);
+    }
+}
+
+void PrintTree(address P, int Level, bool isBinary)
 {
     if (P != NULL)
     {
@@ -1262,4 +1462,93 @@ void PrintTree(address P, int Level, boolean isBinary)
             PrintTree(NextBrother(P), Level, isBinary);
         }
     }
+}
+
+void gotoxy(int x, int y)
+{
+    COORD c;
+    c.X = x;
+    c.Y = y;
+    SetConsoleCursorPosition(hConsole, c);
+}
+
+void initSystem()
+{
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    saved_attributes = consoleInfo.wAttributes;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    WindowsSize.X = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    WindowsSize.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+}
+
+void printGridUI(char Pesan[], int treeType)
+{
+    initSystem();
+
+    printCenterLine('|', 2);
+    printc(Pesan, treeType == NONBINARYTREE ? "===== \033[0;33mNon-Binary Tree\033[0m =====" : treeType == BINARYTREE ? "===== \033[0;34mBinary Tree\033[0m ====="
+                                                                                                                      : "===== \033[0;32mAVL Tree\033[0m =====");
+    printLine('-');
+}
+
+void printc(char JudulMenu[], char JudulTree[])
+{
+    int usedPos = (WindowsSize.X - strlen(JudulTree)) / 2 + 5;
+    if (usedPos > 1)
+    {
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        COORD cursorPos = consoleInfo.dwCursorPosition;
+        gotoxy(usedPos, cursorPos.Y + 1);
+    }
+    printf("%s", JudulTree);
+
+    usedPos = (WindowsSize.X - strlen(JudulMenu)) / 2;
+    if (usedPos > 1)
+    {
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        COORD cursorPos = consoleInfo.dwCursorPosition;
+        gotoxy(usedPos, cursorPos.Y + 1);
+    }
+    printf("%s\n", JudulMenu);
+}
+
+void printLine(char line)
+{
+    int i;
+    for (i = 0; i < WindowsSize.X; i++)
+    {
+        printf("%c", line);
+    }
+    printf("\n");
+}
+
+void printCenterLine(char line, int StartPos)
+{
+    int i;
+    for (i = StartPos; i < WindowsSize.Y - 1; i++)
+    {
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        gotoxy((WindowsSize.X / 2) - 2, i);
+        printf("%c", line);
+    }
+    gotoxy(0, 0);
+}
+
+void printHalfScreen(char Pesan[], bool isNewLine, bool cancelEnter)
+{
+    int usedPos = (WindowsSize.X) / 2;
+    if (usedPos > 1)
+    {
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        int cursorPos = consoleInfo.dwCursorPosition.Y;
+        if (isNewLine && !cancelEnter)
+            cursorPos++;
+        if (cancelEnter)
+        {
+            cursorPos--;
+        }
+        gotoxy(usedPos, cursorPos);
+    }
+    printf("%s", Pesan);
 }
