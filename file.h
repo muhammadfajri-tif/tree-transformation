@@ -2,7 +2,7 @@
 #define file_H
 #include <stdio.h>
 
-boolean fileExists(char filename[]);
+bool fileExists(char filename[]);
 
 FILE *accessFile(char filename[], char mode[]);
 

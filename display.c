@@ -12,6 +12,7 @@ void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
     char confirm;
+    char filename[30];
 inputMenu:
     *treeType = NONBINARYTREE;
     system("cls");
@@ -72,7 +73,6 @@ inputMenu:
         }
         break;
     case 3:
-        char filename[30];
         printHalfScreen("Masukkan nama file (tekan enter untuk memuat dari default file): ", true, false);
         getchar();
         fgets(filename, 30, stdin);
@@ -100,6 +100,7 @@ inputMenu:
 void mainMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
+    char filename[30];
 inputMenu:
     PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     printGridUI("Main Menu", *treeType);
@@ -129,7 +130,6 @@ inputMenu:
         informationMenu(t, btree, tAVL, treeType);
         break;
     case 3:
-        char filename[30];
         printHalfScreen("Masukkan nama file (tekan enter untuk memuat dari default file): ", true, false);
         getchar();
         fgets(filename, 30, stdin);
@@ -144,15 +144,14 @@ inputMenu:
                 fclose(accessFile(filename, "w"));
                 saveNodesTree(filename, *t, Root(*t));
             }
-            else
-            {
-                goto inputMenu;
-            }
         }
         else
         {
             saveNodesTree(filename, *t, Root(*t));
         }
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+        getchar();
+        goto inputMenu;
         break;
     case 4:
     confirmation:

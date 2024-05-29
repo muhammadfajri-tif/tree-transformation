@@ -304,7 +304,7 @@ address deleteBTNode(Tree *t, infotype info)
 {
     if (IsThreaded(*t))
     {
-        address current, currentParent, node, successor, nodeParent, successorParent;
+        address node, successor, nodeParent, successorParent;
         List Queue;
         CreateList(&Queue);
         enqueueInOrder(Root(*t), &Queue);

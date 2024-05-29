@@ -10,7 +10,7 @@
 bool fileExists(char filename[])
 {
   FILE *file;
-  if (strcmp(filename, "\n") == 0)
+  if (strcmp(filename, "\n") == 0 || strcmp(filename, "") == 0)
     file = fopen(DEFAULT_TREE_FILE, "rb");
   else
     file = fopen(filename, "rb");
@@ -25,20 +25,23 @@ bool fileExists(char filename[])
 FILE *accessFile(char filename[], char mode[])
 {
   FILE *file;
-  char *bufferName;
+  char bufferName[30];
   bool error = false;
 
   // empty string for filename will create default file
-  if (strcmp(filename, "\n") == 0)
+  if (strcmp(filename, "\n") == 0 || strcmp(filename, "") == 0)
   {
-    bufferName = (char *)malloc((sizeof(char) * strlen(DEFAULT_TREE_FILE)) + sizeof(char));
+    printf("\nMasuk If\n");
     strcpy(bufferName, DEFAULT_TREE_FILE);
   }
   else
   {
-    bufferName = (char *)malloc(sizeof(char) * strlen(filename));
+    printf("\nMasuk Else\n");
     strcpy(bufferName, filename);
   }
+
+  printf("Buffer Name: %s\n", bufferName);
+  printf("Filename: %s\n", filename);
 
   file = fopen(bufferName, mode);
   if (file == NULL)
@@ -51,7 +54,8 @@ FILE *accessFile(char filename[], char mode[])
     if (file == NULL)
       error = true;
 
-    if (!error){
+    if (!error)
+    {
       char bufferMessage[75] = "\033[1;34m[INFO]\t\033[1;0mBerhasil membuat file '";
       printHalfScreen(strcat(strcat(bufferMessage, bufferName), "'."), true, false);
     }
@@ -61,17 +65,20 @@ FILE *accessFile(char filename[], char mode[])
     // Please check your storage's or file's permission
     printHalfScreen("\033[1;31m[ERR]\t\033[1;0mGagal membuat file. Periksa kembali penyimpanan dan/atau perizinan file pada penyimpanan.", true, false);
 
-  free(bufferName);
   return file;
 }
 
 void loadNodesTree(char filename[], Tree *nbtree)
 {
   FILE *file;
-  if (strcpy(filename, "\n") == 0)
+  if (strcmp(filename, "\n") == 0)
+  {
     file = accessFile(DEFAULT_TREE_FILE, "rb");
+  }
   else
+  {
     file = accessFile(filename, "rb");
+  }
 
   char bufferInfo;
   char bufferParent;
@@ -116,14 +123,15 @@ void appendNodeTree(char filename[], Tree tree, address node)
   fclose(file);
 
   char bufferMessage[36] = "> Menyimpan Node '";
-  printHalfScreen(strcat(strcat(bufferMessage, Info(node)), "' kedalam file."), true, false);
+  snprintf(bufferMessage, sizeof(bufferMessage), "> Menyimpan Node '%c' kedalam file.", Info(node));
+  printHalfScreen(bufferMessage, true, false);
 }
 
 void saveNodesTree(char filename[], Tree tree, address node)
 {
   if (node == NULL)
   {
-    printHalfScreen("\n\033[1;34m[INFO]\t\033[1;0mBerhasil menyimpan data Tree ke dalam file.", true, false);
+    // printHalfScreen("\n\033[1;34m[INFO]\t\033[1;0mBerhasil menyimpan data Tree ke dalam file.", true, false);
     return;
   }
 
