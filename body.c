@@ -251,6 +251,12 @@ deleteNode:
     listNodes(*t);
     printHalfScreen("Masukkan Info Node Yang Ingin Dihapus = ", true, false);
     scanf(" %c", &info);
+    if(info == t->root->info){
+        printHalfScreen("Tidak bisa menghapus root!", true, false);
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+        PLATFORM_NAME == "windows" ? getch() : getchar();
+        goto deleteNode;
+    }
     if (search(*t, info) != NULL)
     {
         if (!t->isBinary)
@@ -263,7 +269,7 @@ deleteNode:
         }
         else if (t->isBinary == true && t->isAVL == true)
         {
-            // delete AVL tree
+            deleteAVLNode(t->root, info);
         }
         PLATFORM_NAME == "windows" ? system("cls") : system("clear");
         printGridUI("Delete Node", treeType);
@@ -603,6 +609,76 @@ address deleteBTNode(Tree *t, infotype info)
             }
         }
     }
+}
+
+address deleteAVLNode(address root, infotype info){
+    if(root == NULL){
+        return root;
+    }
+
+    if(info < root->info){
+        root->leftNode = deleteAVLNode(root->leftNode, info);
+    }
+    else if(info > root->info){
+        root->rightNode = deleteAVLNode(root->rightNode, info);
+    }
+    else{
+        if(root->leftNode == NULL && root->leftThread == false || root->rightNode == NULL && root->rightThread == false){
+            address temp = root->leftNode ? root->leftNode : root->rightNode;
+            if(temp == NULL){
+                temp = root;
+                root = NULL;
+            }
+            else{
+                root = temp;
+            }
+            free(temp);
+        }
+        else{
+            address temp = minValueNode(root->rightNode);
+            root->info = temp->info;
+            root->rightNode = deleteAVLNode(root->rightNode, temp->info);
+        }
+    }
+
+    if(root == NULL){
+        return root;
+    }
+
+    int balance = balanceFactor(root);
+    // Right Right Case
+    if (balance > 1 && info > Info(RightSon(root)))
+    {
+        return leftRotate(root);
+    }
+    // Left Left Case
+    if (balance < -1 && info < Info(LeftSon(root)))
+    {
+        return rightRotate(root);
+    }
+    // Right Left Case
+    if (balance > 1 && info < Info(RightSon(root)))
+    {
+        RightSon(root) = rightRotate(RightSon(root));
+        return leftRotate(root);
+    }
+    // Left Right Case
+    if (balance < -1 && info > Info(LeftSon(root)))
+    {
+        LeftSon(root) = leftRotate(LeftSon(root));
+        return rightRotate(root);
+    }
+
+    return root;
+}
+
+address minValueNode(address node){
+    address current = node;
+    while (LeftSon(current) != NULL && LeftThread(current) == false)
+    {
+        current = LeftSon(current);
+    }
+    return current;
 }
 
 void defaultTree(Tree *t)
