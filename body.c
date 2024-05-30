@@ -65,10 +65,18 @@ void insertBTNode(Tree *t, infotype info, infotype parent)
         if (LeftThread(parentNode) || LeftSon(parentNode) == NULL)
         {
             LeftSon(parentNode) = allocate(info);
+            if (LeftThread(parentNode))
+            {
+                LeftThread(parentNode) = false;
+            }
         }
         else if (RightThread(parentNode) || RightSon(parentNode) == NULL)
         {
             RightSon(parentNode) = allocate(info);
+            if (RightThread(parentNode))
+            {
+                RightThread(parentNode) = false;
+            }
         }
     }
     else
@@ -134,7 +142,7 @@ void insert(Tree *t)
                 {
                     if (t->isBinary == true)
                     {
-                        if (!LeftThread(parentNode) && LeftSon(parentNode) != NULL && RightThread(parentNode) && RightSon(parentNode) != NULL)
+                        if (!LeftThread(parentNode) && LeftSon(parentNode) != NULL && !RightThread(parentNode) && RightSon(parentNode) != NULL)
                         {
                             sprintf(pesan, "Parent dengan info %c sudah memiliki 2 anak!\n", parent);
                             printHalfScreen(pesan, true, false);
@@ -326,52 +334,47 @@ address deleteBTNode(Tree *t, infotype info)
                             {
                                 tempL = LeftSon(node);
                                 tempR = LeftSon(RightSon(node));
-                            // traversal right son until found NULL
-                            // Traverse:
                                 CreateList(&Queue2);
                                 current = RightSon(node);
                                 currentChild = NULL;
 
+                                // traversal right son until found NULL
                                 if (current != NULL)
                                 {
                                     // attach condition
-                                    printf("\nCurrent Traversal %c\n", Info(current));
                                     if (LeftThread(current) || LeftSon(current) == NULL)
                                     {
-                                        printf("\nMasuk If 1\n");
-                                        LeftSon(current) = tempL;
-                                        // RightSon(current) = tempR;
-                                        goto TraverseEnd;
+                                        LeftSon(current) = tempR;
+                                        LeftThread(current) = false;
+                                        LeftSon(RightSon(node)) = LeftSon(node);
+                                        LeftSon(node) = NULL;
+                                        goto TraverseLeftEnd;
                                     }
                                     else if (RightThread(current) || RightSon(current) == NULL)
                                     {
-                                        printf("\nMasuk Else 1\n");
-                                        RightSon(current) = tempL;
-                                        // LeftSon(current) = tempR;
-                                        printf("Current Left %c", Info(LeftSon(current)));
-                                        printf("Current Right %c", Info(RightSon(current)));
-                                        goto TraverseEnd;
+                                        RightSon(current) = tempR;
+                                        RightThread(current) = false;
+                                        LeftSon(RightSon(node)) = LeftSon(node);
+                                        LeftSon(node) = NULL;
+                                        goto TraverseLeftEnd;
                                     }
-                                    
+
                                     // traversal
                                     while (current != NULL || Queue2.First != NULL)
                                     {
                                         if (LeftSon(current) != NULL && LeftThread(current) == false)
                                         {
-                                            printf("\nCurrent LEFT Traversal %c\n", Info(LeftSon(current)));
                                             if (LeftThread(LeftSon(current)) || LeftSon(LeftSon(current)) == NULL)
                                             {
-                                                printf("\nMasuk If 2\n");
                                                 LeftSon(LeftSon(current)) = tempL;
-                                                RightSon(LeftSon(current)) = tempR;
-                                                goto TraverseEnd;
+                                                LeftThread(LeftSon(current)) = false;
+                                                goto TraverseLeftEnd;
                                             }
                                             else if (RightThread(LeftSon(current)) || RightSon(LeftSon(current)) == NULL)
                                             {
-                                                printf("\nMasuk Else 2\n");
                                                 RightSon(LeftSon(current)) = tempL;
-                                                LeftSon(LeftSon(current)) = tempR;
-                                                goto TraverseEnd;
+                                                RightThread(LeftSon(current)) = false;
+                                                goto TraverseLeftEnd;
                                             }
 
                                             if (LeftSon(LeftSon(current)) != NULL || RightSon(LeftSon(current)) != NULL)
@@ -382,20 +385,17 @@ address deleteBTNode(Tree *t, infotype info)
 
                                         if (RightSon(current) != NULL && RightThread(current) == false)
                                         {
-                                            printf("\nCurrent RIGHT Traversal %c\n", Info(RightSon(current)));
                                             if (LeftThread(RightSon(current)) || LeftSon(RightSon(current)) == NULL)
                                             {
-                                                printf("\nMasuk If 3\n");
                                                 LeftSon(RightSon(current)) = tempL;
-                                                RightSon(RightSon(current)) = tempR;
-                                                goto TraverseEnd;
+                                                LeftThread(RightSon(current)) = false;
+                                                goto TraverseLeftEnd;
                                             }
                                             else if (RightThread(RightSon(current)) || RightSon(RightSon(current)) == NULL)
                                             {
-                                                printf("\nMasuk Else 3\n");
                                                 RightSon(RightSon(current)) = tempL;
-                                                LeftSon(RightSon(current)) = tempR;
-                                                goto TraverseEnd;
+                                                RightThread(RightSon(current)) = tempL;
+                                                goto TraverseLeftEnd;
                                             }
 
                                             if (LeftSon(RightSon(current)) != NULL || RightSon(RightSon(current)) != NULL)
@@ -414,48 +414,11 @@ address deleteBTNode(Tree *t, infotype info)
                                         }
                                     }
                                 }
-                                //////
-                                // if (traverseNode != NULL)
-                                // {
-                                //     printf("\nCurrent Traversal %c\n", Info(traverseNode));
-                                //     // attach tempL to NULL
-                                //     if (LeftThread(traverseNode) || LeftSon(traverseNode) == NULL)
-                                //     {
-                                //         printf("\nMasuk If\n");
-                                //         LeftSon(traverseNode) = tempL;
-                                //         RightSon(traverseNode) = tempR;
-                                //         goto TraverseEnd;
-                                //     }
-                                //     else if (RightThread(traverseNode) || RightSon(traverseNode) == NULL)
-                                //     {
-                                //         printf("\nMasuk Else\n");
-                                //         RightSon(traverseNode) = tempL;
-                                //         LeftSon(traverseNode) = tempR;
-                                //         goto TraverseEnd;
-                                //     }
-
-                                //     if (!LeftThread(traverseNode))
-                                //     {
-                                //         traverseNode = LeftSon(traverseNode);
-                                //         goto Traverse;
-                                //     }
-                                //     if (!RightThread(traverseNode))
-                                //     {
-                                //         traverseNode = RightSon(traverseNode);
-                                //         goto Traverse;
-                                //     }
-                                // }
-                                // LeftSon(RightSon(node)) = LeftSon(node);
-                                // LeftSon(node) = NULL;
                             }
-                            TraverseEnd:
-                            printf("\nEND OF LEVEL ORDER TRAVERSE\n");
+                        TraverseLeftEnd:
                             LeftSon(nodeParent) = RightSon(node);
-                            RightSon(node) = NULL; 
-                            free(tempL);
-                            free(tempR);
-                            free(node); 
-                            system("pause");
+                            RightSon(node) = NULL;
+                            free(node);
                             return node;
                         }
                         else // Jika tidak memiliki right son (thread)
@@ -473,9 +436,91 @@ address deleteBTNode(Tree *t, infotype info)
                         {
                             if (!LeftThread(node) && LeftSon(node) != NULL) // Jika memiliki left son
                             {
-                                LeftSon(RightSon(node)) = LeftSon(node);
-                                LeftSon(node) = NULL;
+                                tempL = LeftSon(node);
+                                tempR = LeftSon(RightSon(node));
+                                current = RightSon(node);
+
+                                // traversal right son until found NULL
+                                CreateList(&Queue2);
+                                currentChild = NULL;
+
+                                if (current != NULL)
+                                {
+                                    // attach condition
+                                    if (LeftThread(current) || LeftSon(current) == NULL)
+                                    {
+                                        LeftSon(current) = tempR;
+                                        LeftThread(current) = false;
+                                        LeftSon(RightSon(node)) = LeftSon(node);
+                                        LeftSon(node) = NULL;
+                                        goto TraverseRightEnd;
+                                    }
+                                    else if (RightThread(current) || RightSon(current) == NULL)
+                                    {
+                                        RightSon(current) = tempR;
+                                        RightThread(current) = false;
+                                        LeftSon(RightSon(node)) = LeftSon(node);
+                                        LeftSon(node) = NULL;
+                                        goto TraverseRightEnd;
+                                    }
+
+                                    // traversal until found NULL
+                                    while (current != NULL || Queue2.First != NULL)
+                                    {
+                                        if (LeftSon(current) != NULL && LeftThread(current) == false)
+                                        {
+                                            if (LeftThread(LeftSon(current)) || LeftSon(LeftSon(current)) == NULL)
+                                            {
+                                                LeftSon(LeftSon(current)) = tempL;
+                                                LeftThread(LeftSon(current)) = false;
+                                                goto TraverseRightEnd;
+                                            }
+                                            else if (RightThread(LeftSon(current)) || RightSon(LeftSon(current)) == NULL)
+                                            {
+                                                RightSon(LeftSon(current)) = tempL;
+                                                RightThread(LeftSon(current)) = false;
+                                                goto TraverseRightEnd;
+                                            }
+
+                                            if (LeftSon(LeftSon(current)) != NULL || RightSon(LeftSon(current)) != NULL)
+                                            {
+                                                enqueue(&Queue2, LeftSon(current));
+                                            }
+                                        }
+
+                                        if (RightSon(current) != NULL && RightThread(current) == false)
+                                        {
+                                            if (LeftThread(RightSon(current)) || LeftSon(RightSon(current)) == NULL)
+                                            {
+                                                LeftSon(RightSon(current)) = tempL;
+                                                LeftThread(RightSon(current)) = false;
+                                                goto TraverseRightEnd;
+                                            }
+                                            else if (RightThread(RightSon(current)) || RightSon(RightSon(current)) == NULL)
+                                            {
+                                                RightSon(RightSon(current)) = tempL;
+                                                RightThread(RightSon(current)) = tempL;
+                                                goto TraverseRightEnd;
+                                            }
+
+                                            if (LeftSon(RightSon(current)) != NULL || RightSon(RightSon(current)) != NULL)
+                                            {
+                                                enqueue(&Queue2, RightSon(current));
+                                            }
+                                        }
+
+                                        if (Queue2.First != NULL)
+                                        {
+                                            current = dequeue(&Queue2);
+                                        }
+                                        else
+                                        {
+                                            current = NULL;
+                                        }
+                                    }
+                                }
                             }
+                        TraverseRightEnd:
                             RightSon(nodeParent) = RightSon(node);
                             RightSon(node) = NULL;
                             free(node);
