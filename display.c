@@ -8,6 +8,26 @@
 #include "includes/config.h"
 #include "file.h"
 
+void welcome(Tree *t, Tree *btree, Tree *tAVL, int *treeType){
+    printf("                                                  _______  ______    _______  _______                                             \n");
+    printf("                                                 |       ||    _ |  |       ||       |                                            \n");
+    printf("                                                 |_     _||   | ||  |    ___||    ___|                                            \n");
+    printf("                                                   |   |  |   |_||_ |   |___ |   |___                                             \n");
+    printf("                                                   |   |  |    __  ||    ___||    ___|                                            \n");
+    printf("                                                   |   |  |   |  | ||   |___ |   |___                                             \n");
+    printf("                                                   |___|  |___|  |_||_______||_______|                                            \n");
+    printf("     _______  ______    _______  __    _  _______  _______  _______  ______    __   __  _______  _______  ___   _______  __    _ \n");
+    printf("    |       ||    _ |  |   _   ||  |  | ||       ||       ||       ||    _ |  |  |_|  ||   _   ||       ||   | |       ||  |  | |\n");
+    printf("    |_     _||   | ||  |  |_|  ||   |_| ||  _____||    ___||   _   ||   | ||  |       ||  |_|  ||_     _||   | |   _   ||   |_| |\n");
+    printf("      |   |  |   |_||_ |       ||       || |_____ |   |___ |  | |  ||   |_||_ |       ||       |  |   |  |   | |  | |  ||       |\n");
+    printf("      |   |  |    __  ||       ||  _    ||_____  ||    ___||  |_|  ||    __  ||       ||       |  |   |  |   | |  |_|  ||  _    |\n");
+    printf("      |   |  |   |  | ||   _   || | |   | _____| ||   |    |       ||   |  | || ||_|| ||   _   |  |   |  |   | |       || | |   |\n");
+    printf("      |___|  |___|  |_||__| |__||_|  |__||_______||___|    |_______||___|  |_||_|   |_||__| |__|  |___|  |___| |_______||_|  |__|\n");
+    printf("\n\nKetik apapun untuk melanjutkan...");
+    PLATFORM_NAME == "windows" ? getch() : getchar();
+    createTreeMenu(t, btree, tAVL, treeType);
+}
+
 void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
@@ -186,7 +206,7 @@ inputMenu:
         }
         break;
     case 99:
-        exit(0);
+        exitProgram();
         break;
     default:
         printHalfScreen("Input yang anda masukkan salah! Mohon input sesuai opsi menu!", true, false);
@@ -211,7 +231,7 @@ inputMenu:
     printHalfScreen("2. Delete Node", true, false);
     printHalfScreen("3. Update Node", true, false);
     printHalfScreen("4. Transform Tree", true, false);
-    if (*treeType > NONBINARYTREE)
+    if (*treeType == BINARYTREE)
     {
         printHalfScreen("5. Create Thread", true, false);
     }
@@ -278,15 +298,11 @@ inputMenu:
         transformMenu(t, btree, tAVL, treeType);
         break;
     case 5:
-        if (*treeType > NONBINARYTREE)
+        if (*treeType == BINARYTREE)
         {
             if (*treeType == BINARYTREE)
             {
                 createThread(btree);
-            }
-            else if (*treeType == AVLTREE)
-            {
-                createThread(tAVL);
             }
             printHalfScreen("Thread berhasil dibuat!", true, false);
             printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
@@ -701,4 +717,23 @@ void PrintDefaultTreePreview(){
     Tree t;
     defaultTree(&t);
     PrintTree(Root(t), 0, t.isBinary);
+}
+
+void exitProgram(){
+    system("cls");
+    printf("     _______  __   __  _______  __    _  ___   _    __   __  _______  __   __    _______  __    _  ______  \n");
+    printf("    |       ||  | |  ||   _   ||  |  | ||   | | |  |  | |  ||       ||  | |  |  |   _   ||  |  | ||      | \n");
+    printf("    |_     _||  |_|  ||  |_|  ||   |_| ||   |_| |  |  |_|  ||   _   ||  | |  |  |  |_|  ||   |_| ||  _    | \n");
+    printf("      |   |  |       ||       ||       ||      _|  |       ||  | |  ||  |_|  |  |       ||       || | |   | \n");
+    printf("      |   |  |       ||       ||  _    ||     |_   |_     _||  |_|  ||       |  |       ||  _    || |_|   | \n");
+    printf("      |   |  |   _   ||   _   || | |   ||    _  |    |   |  |       ||       |  |   _   || | |   ||       | \n");
+    printf("      |___|  |__| |__||__| |__||_|  |__||___| |_|    |___|  |_______||_______|  |__| |__||_|  |__||______| \n");
+    printf("     _______  _______  _______    __   __    ___      _______  _______  _______  ______      ___   ______  \n");
+    printf("    |       ||       ||       |  |  | |  |  |   |    |   _   ||       ||       ||    _ |    |   | |      | \n");
+    printf("    |  _____||    ___||    ___|  |  | |  |  |   |    |  |_|  ||_     _||    ___||   | ||    |___| |  _    | \n");
+    printf("    | |_____ |   |___ |   |___   |  |_|  |  |   |    |       |  |   |  |   |___ |   |_||_    ___  | | |   | \n");
+    printf("    |_____  ||    ___||    ___|  |       |  |   |___ |       |  |   |  |    ___||    __  |  |   | | |_|   | \n");
+    printf("     _____| ||   |___ |   |___   |       |  |       ||   _   |  |   |  |   |___ |   |  | |  |___| |       | \n");
+    printf("    |_______||_______||_______|  |_______|  |_______||__| |__|  |___|  |_______||___|  |_|        |______| \n");
+    exit(0);
 }

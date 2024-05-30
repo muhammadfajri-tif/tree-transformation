@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   Tree btree;
   Tree tAVL;
   int treeType = NONBINARYTREE;
-  createTreeMenu(&nbtree, &btree, &tAVL, &treeType);
+  welcome(&nbtree, &btree, &tAVL, &treeType);
 
   return 0;
-} 
+}

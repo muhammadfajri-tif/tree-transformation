@@ -269,7 +269,7 @@ deleteNode:
         }
         else if (t->isBinary == true && t->isAVL == true)
         {
-            deleteAVLNode(t->root, info);
+            (*t).root = deleteAVLNode(t->root, info);
         }
         PLATFORM_NAME == "windows" ? system("cls") : system("clear");
         printGridUI("Delete Node", treeType);
@@ -625,15 +625,19 @@ address deleteAVLNode(address root, infotype info){
     else{
         if(root->leftNode == NULL && root->leftThread == false || root->rightNode == NULL && root->rightThread == false){
             address temp = root->leftNode ? root->leftNode : root->rightNode;
+
+            //no child condition
             if(temp == NULL){
                 temp = root;
                 root = NULL;
             }
+            //1 child condition
             else{
-                root = temp;
+                *root = *temp;
             }
             free(temp);
         }
+        //2 child condition
         else{
             address temp = minValueNode(root->rightNode);
             root->info = temp->info;
@@ -646,27 +650,28 @@ address deleteAVLNode(address root, infotype info){
     }
 
     int balance = balanceFactor(root);
-    // Right Right Case
-    if (balance > 1 && info > Info(RightSon(root)))
-    {
-        return leftRotate(root);
-    }
+    
     // Left Left Case
-    if (balance < -1 && info < Info(LeftSon(root)))
+    if (balance < -1 && balanceFactor(root->leftNode) < 0)
     {
         return rightRotate(root);
     }
-    // Right Left Case
-    if (balance > 1 && info < Info(RightSon(root)))
-    {
-        RightSon(root) = rightRotate(RightSon(root));
-        return leftRotate(root);
-    }
     // Left Right Case
-    if (balance < -1 && info > Info(LeftSon(root)))
+    if (balance < -1 && balanceFactor(root->leftNode) >= 0)
     {
         LeftSon(root) = leftRotate(LeftSon(root));
         return rightRotate(root);
+    }
+    // Right Right Case
+    if (balance > 1 && balanceFactor(root->rightNode) > 0)
+    {
+        return leftRotate(root);
+    }
+    // Right Left Case
+    if (balance > 1 && balanceFactor(root->rightNode) <= 0)
+    {
+        RightSon(root) = rightRotate(RightSon(root));
+        return leftRotate(root);
     }
 
     return root;

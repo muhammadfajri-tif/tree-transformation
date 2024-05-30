@@ -101,6 +101,7 @@ void listNodes(Tree t);
 /******************************/
 
 /******* display *******/
+void welcome(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void showTreeTypes(int treeType);
 void mainMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
@@ -113,6 +114,7 @@ void showTreeDetails(Tree *t, int *treeType);
 void PrintTree(address P, int Level, bool isBinary);
 void PrintTreeVisualization(Tree t, Tree btree, Tree tAVL, int treeType);
 void PrintDefaultTreePreview();
+void exitProgram();
 
 void gotoxy(int x, int y);
 void initSystem();
