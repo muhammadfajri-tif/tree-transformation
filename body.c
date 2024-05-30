@@ -1011,8 +1011,14 @@ void balanceToAVL(Tree BTree, address BT, Tree *AVLTree)
         gotoxy(0, 3);
         printHalfScreen("Ketik Apapun Untuk Melanjutkan Animasi...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
-        balanceToAVL(BTree, LeftSon(BT), AVLTree);
-        balanceToAVL(BTree, RightSon(BT), AVLTree);
+        if (!LeftThread(BT))
+        {
+            balanceToAVL(BTree, LeftSon(BT), AVLTree);
+        }
+        if (!RightThread(BT))
+        {
+            balanceToAVL(BTree, RightSon(BT), AVLTree);
+        }
     }
 }
 

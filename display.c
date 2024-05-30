@@ -68,7 +68,8 @@ inputMenu:
         gotoxy(0, 4);
         PrintDefaultTreePreview();
         gotoxy(0, 10);
-        printHalfScreen("Akan dibuat Non-Binary Tree dengan nilai default seperti visualisasi di samping.", true, false);
+        printHalfScreen("Akan dibuat Non-Binary Tree dengan", true, false);
+        printHalfScreen("nilai default seperti visualisasi di samping.", true, false);
         printHalfScreen("input y untuk konfirmasi: ", true, false);
         scanf(" %c", &confirm);
         if(confirm != 'y'){
