@@ -65,10 +65,18 @@ void insertBTNode(Tree *t, infotype info, infotype parent)
         if (LeftThread(parentNode) || LeftSon(parentNode) == NULL)
         {
             LeftSon(parentNode) = allocate(info);
+            if (LeftThread(parentNode))
+            {
+                LeftThread(parentNode) = false;
+            }
         }
         else if (RightThread(parentNode) || RightSon(parentNode) == NULL)
         {
             RightSon(parentNode) = allocate(info);
+            if (RightThread(parentNode))
+            {
+                RightThread(parentNode) = false;
+            }
         }
     }
     else
@@ -134,7 +142,7 @@ void insert(Tree *t)
                 {
                     if (t->isBinary == true)
                     {
-                        if (!LeftThread(parentNode) && LeftSon(parentNode) != NULL && RightThread(parentNode) && RightSon(parentNode) != NULL)
+                        if (!LeftThread(parentNode) && LeftSon(parentNode) != NULL && !RightThread(parentNode) && RightSon(parentNode) != NULL)
                         {
                             sprintf(pesan, "Parent dengan info %c sudah memiliki 2 anak!\n", parent);
                             printHalfScreen(pesan, true, false);
@@ -310,8 +318,8 @@ address deleteBTNode(Tree *t, infotype info)
 {
     if (IsThreaded(*t))
     {
-        address node, successor, nodeParent, successorParent;
-        List Queue;
+        address current, currentChild, node, successor, nodeParent, successorParent, tempL, tempR, traverseNode;
+        List Queue, Queue2;
         CreateList(&Queue);
         enqueueInOrder(Root(*t), &Queue);
         push(&Queue, NULL);
@@ -330,9 +338,90 @@ address deleteBTNode(Tree *t, infotype info)
                         {
                             if (!LeftThread(node) && LeftSon(node) != NULL) // Jika memiliki left son
                             {
-                                LeftSon(RightSon(node)) = LeftSon(node);
-                                LeftSon(node) = NULL;
+                                tempL = LeftSon(node);
+                                tempR = LeftSon(RightSon(node));
+                                CreateList(&Queue2);
+                                current = RightSon(node);
+                                currentChild = NULL;
+
+                                // traversal right son until found NULL
+                                if (current != NULL)
+                                {
+                                    // attach condition
+                                    if (LeftThread(current) || LeftSon(current) == NULL)
+                                    {
+                                        LeftSon(current) = tempR;
+                                        LeftThread(current) = false;
+                                        LeftSon(RightSon(node)) = LeftSon(node);
+                                        LeftSon(node) = NULL;
+                                        goto TraverseLeftEnd;
+                                    }
+                                    else if (RightThread(current) || RightSon(current) == NULL)
+                                    {
+                                        RightSon(current) = tempR;
+                                        RightThread(current) = false;
+                                        LeftSon(RightSon(node)) = LeftSon(node);
+                                        LeftSon(node) = NULL;
+                                        goto TraverseLeftEnd;
+                                    }
+
+                                    // traversal
+                                    while (current != NULL || Queue2.First != NULL)
+                                    {
+                                        if (LeftSon(current) != NULL && LeftThread(current) == false)
+                                        {
+                                            if (LeftThread(LeftSon(current)) || LeftSon(LeftSon(current)) == NULL)
+                                            {
+                                                LeftSon(LeftSon(current)) = tempL;
+                                                LeftThread(LeftSon(current)) = false;
+                                                goto TraverseLeftEnd;
+                                            }
+                                            else if (RightThread(LeftSon(current)) || RightSon(LeftSon(current)) == NULL)
+                                            {
+                                                RightSon(LeftSon(current)) = tempL;
+                                                RightThread(LeftSon(current)) = false;
+                                                goto TraverseLeftEnd;
+                                            }
+
+                                            if (LeftSon(LeftSon(current)) != NULL || RightSon(LeftSon(current)) != NULL)
+                                            {
+                                                enqueue(&Queue2, LeftSon(current));
+                                            }
+                                        }
+
+                                        if (RightSon(current) != NULL && RightThread(current) == false)
+                                        {
+                                            if (LeftThread(RightSon(current)) || LeftSon(RightSon(current)) == NULL)
+                                            {
+                                                LeftSon(RightSon(current)) = tempL;
+                                                LeftThread(RightSon(current)) = false;
+                                                goto TraverseLeftEnd;
+                                            }
+                                            else if (RightThread(RightSon(current)) || RightSon(RightSon(current)) == NULL)
+                                            {
+                                                RightSon(RightSon(current)) = tempL;
+                                                RightThread(RightSon(current)) = tempL;
+                                                goto TraverseLeftEnd;
+                                            }
+
+                                            if (LeftSon(RightSon(current)) != NULL || RightSon(RightSon(current)) != NULL)
+                                            {
+                                                enqueue(&Queue2, RightSon(current));
+                                            }
+                                        }
+
+                                        if (Queue2.First != NULL)
+                                        {
+                                            current = dequeue(&Queue2);
+                                        }
+                                        else
+                                        {
+                                            current = NULL;
+                                        }
+                                    }
+                                }
                             }
+                        TraverseLeftEnd:
                             LeftSon(nodeParent) = RightSon(node);
                             RightSon(node) = NULL;
                             free(node);
@@ -353,9 +442,91 @@ address deleteBTNode(Tree *t, infotype info)
                         {
                             if (!LeftThread(node) && LeftSon(node) != NULL) // Jika memiliki left son
                             {
-                                LeftSon(RightSon(node)) = LeftSon(node);
-                                LeftSon(node) = NULL;
+                                tempL = LeftSon(node);
+                                tempR = LeftSon(RightSon(node));
+                                current = RightSon(node);
+
+                                // traversal right son until found NULL
+                                CreateList(&Queue2);
+                                currentChild = NULL;
+
+                                if (current != NULL)
+                                {
+                                    // attach condition
+                                    if (LeftThread(current) || LeftSon(current) == NULL)
+                                    {
+                                        LeftSon(current) = tempR;
+                                        LeftThread(current) = false;
+                                        LeftSon(RightSon(node)) = LeftSon(node);
+                                        LeftSon(node) = NULL;
+                                        goto TraverseRightEnd;
+                                    }
+                                    else if (RightThread(current) || RightSon(current) == NULL)
+                                    {
+                                        RightSon(current) = tempR;
+                                        RightThread(current) = false;
+                                        LeftSon(RightSon(node)) = LeftSon(node);
+                                        LeftSon(node) = NULL;
+                                        goto TraverseRightEnd;
+                                    }
+
+                                    // traversal until found NULL
+                                    while (current != NULL || Queue2.First != NULL)
+                                    {
+                                        if (LeftSon(current) != NULL && LeftThread(current) == false)
+                                        {
+                                            if (LeftThread(LeftSon(current)) || LeftSon(LeftSon(current)) == NULL)
+                                            {
+                                                LeftSon(LeftSon(current)) = tempL;
+                                                LeftThread(LeftSon(current)) = false;
+                                                goto TraverseRightEnd;
+                                            }
+                                            else if (RightThread(LeftSon(current)) || RightSon(LeftSon(current)) == NULL)
+                                            {
+                                                RightSon(LeftSon(current)) = tempL;
+                                                RightThread(LeftSon(current)) = false;
+                                                goto TraverseRightEnd;
+                                            }
+
+                                            if (LeftSon(LeftSon(current)) != NULL || RightSon(LeftSon(current)) != NULL)
+                                            {
+                                                enqueue(&Queue2, LeftSon(current));
+                                            }
+                                        }
+
+                                        if (RightSon(current) != NULL && RightThread(current) == false)
+                                        {
+                                            if (LeftThread(RightSon(current)) || LeftSon(RightSon(current)) == NULL)
+                                            {
+                                                LeftSon(RightSon(current)) = tempL;
+                                                LeftThread(RightSon(current)) = false;
+                                                goto TraverseRightEnd;
+                                            }
+                                            else if (RightThread(RightSon(current)) || RightSon(RightSon(current)) == NULL)
+                                            {
+                                                RightSon(RightSon(current)) = tempL;
+                                                RightThread(RightSon(current)) = tempL;
+                                                goto TraverseRightEnd;
+                                            }
+
+                                            if (LeftSon(RightSon(current)) != NULL || RightSon(RightSon(current)) != NULL)
+                                            {
+                                                enqueue(&Queue2, RightSon(current));
+                                            }
+                                        }
+
+                                        if (Queue2.First != NULL)
+                                        {
+                                            current = dequeue(&Queue2);
+                                        }
+                                        else
+                                        {
+                                            current = NULL;
+                                        }
+                                    }
+                                }
                             }
+                        TraverseRightEnd:
                             RightSon(nodeParent) = RightSon(node);
                             RightSon(node) = NULL;
                             free(node);

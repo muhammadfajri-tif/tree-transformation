@@ -1,6 +1,7 @@
 // #include "./includes/boolean.h"
 #include "body.c"
 #include "display.c"
+#include "file.c"
 #include <stdio.h>
 
 int main(int argc, char *argv[])

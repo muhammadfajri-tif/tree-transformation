@@ -1,15 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #if defined(_WIN64) || defined(_WIN32)
 #include <conio.h>
 #endif
 #include "header.h"
 #include "includes/config.h"
+#include "file.h"
 
 void createTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
     char confirm;
+    char filename[30];
 inputMenu:
     *treeType = NONBINARYTREE;
     system("cls");
@@ -70,7 +73,20 @@ inputMenu:
         }
         break;
     case 3:
-        /* code */
+        printHalfScreen("Masukkan nama file (tekan enter untuk memuat dari default file): ", true, false);
+        getchar();
+        fgets(filename, 30, stdin);
+        filename[strcspn(filename, "\r\n")] = 0; // remove newline
+        loadNodesTree(filename, t);
+        (*btree).isBinary = true;
+        (*btree).isAVL = false;
+        (*btree).root = NULL;
+        (*tAVL).isBinary = true;
+        (*tAVL).isAVL = true;
+        (*tAVL).root = NULL;
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+        PLATFORM_NAME == "windows" ? getch() : getchar();
+        mainMenu(t, btree, tAVL, treeType);
         break;
     default:
         printHalfScreen("Input yang anda masukkan salah! Mohon input angka 1-3", true, false);
@@ -84,6 +100,7 @@ inputMenu:
 void mainMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
 {
     int choice;
+    char filename[30];
 inputMenu:
     PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     printGridUI("Main Menu", *treeType);
@@ -113,7 +130,28 @@ inputMenu:
         informationMenu(t, btree, tAVL, treeType);
         break;
     case 3:
-        /* code */
+        printHalfScreen("Masukkan nama file (tekan enter untuk memuat dari default file): ", true, false);
+        getchar();
+        fgets(filename, 30, stdin);
+        filename[strcspn(filename, "\r\n")] = 0; // remove newline
+        if (fileExists(filename))
+        {
+            char bufferMessage[200] = "\033[1;33m[WARN]\t\033[1;0mSudah Terdapat data pada file '";
+            strcat(strcat(bufferMessage, filename), "'. Menyimpan pada file ini akan mengakibatkan data sebelumnya terhapus. Apakah anda akan menyimpannya? (y/n) ");
+            printHalfScreen(bufferMessage, true, false);
+            if ((PLATFORM_NAME == "windows" ? getchar() : getchar()) == 'y')
+            {
+                fclose(accessFile(filename, "w"));
+                saveNodesTree(filename, *t, Root(*t));
+            }
+        }
+        else
+        {
+            saveNodesTree(filename, *t, Root(*t));
+        }
+        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+        getchar();
+        goto inputMenu;
         break;
     case 4:
     confirmation:

@@ -1,6 +1,10 @@
 # binary files
 out/
 dist/
+*
+!/**/
+!*.*
+*.dat
 
 # Prerequisites
 *.d
