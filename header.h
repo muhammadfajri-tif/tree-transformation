@@ -72,6 +72,7 @@ address rightRotate(address pivot);
 address copyNode(address Root);
 void transform(Tree nbtree, Tree *btree);   //transform NB to B
 void balanceToAVL(Tree Btree, address BT, Tree *AVLTree);   //balancing Btree to AVL Tree
+void deleteTree(Tree *t);
 /********************************/
 
 /******* traversal tree *******/

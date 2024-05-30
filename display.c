@@ -156,9 +156,11 @@ inputMenu:
         filename[strcspn(filename, "\r\n")] = 0; // remove newline
         if (fileExists(filename))
         {
-            char bufferMessage[200] = "\033[1;33m[WARN]\t\033[1;0mSudah Terdapat data pada file '";
-            strcat(strcat(bufferMessage, filename), "'. Menyimpan pada file ini akan mengakibatkan data sebelumnya terhapus. Apakah anda akan menyimpannya? (y/n) ");
+            char bufferMessage[200] = "\033[1;33m[WARN]\033[1;0m Sudah Terdapat data pada file '";
+            strcat(strcat(bufferMessage, filename), "'.");
             printHalfScreen(bufferMessage, true, false);
+            printHalfScreen("Menyimpan pada file ini akan mengakibatkan data sebelumnya terhapus. ", true, false);
+            printHalfScreen("Apakah anda yakin ingin melanjutkan? (y/n): ", true, false);
             if ((PLATFORM_NAME == "windows" ? getchar() : getchar()) == 'y')
             {
                 fclose(accessFile(filename, "w"));
@@ -180,6 +182,7 @@ inputMenu:
         printHalfScreen("Ketik y untuk ya dan n untuk tidak", true, false);
         if ((PLATFORM_NAME == "windows" ? getch() : getchar()) == 'y')
         {
+            (*t).root = NULL;
             createTreeMenu(t, btree, tAVL, treeType);
         }
         else if ((PLATFORM_NAME == "windows" ? getch() : getchar()) == 'n')
@@ -279,7 +282,14 @@ inputMenu:
     case 3:
         if (*treeType == NONBINARYTREE)
         {
-            update(t);
+            if(IsEmpty(*t)){
+                printHalfScreen("Tree masih kosong, tidak bisa diupdate!", true, false);
+                printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+                PLATFORM_NAME == "windows" ? getch() : getchar();
+                goto inputMenu;
+            }else{
+                update(t);
+            }
         }
         else if (*treeType == BINARYTREE)
         {
@@ -391,31 +401,38 @@ void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
     gotoxy(0, 4);
     if (*treeType == NONBINARYTREE)
     {
-        printHalfScreen("Akan dilakukan transformasi dari Non-Binary Tree ke Binary Tree.", false, false);
-        printHalfScreen("1. Melanjutkan", true, false);
-        printHalfScreen("2. Kembali", true, false);
-        printHalfScreen("Pilihanmu = ", true, false);
-        scanf("%d", &choice);
-        if (choice == 1)
-        {
-            transform(*t, btree);
-            *treeType = BINARYTREE;
-            PLATFORM_NAME == "windows" ? system("cls") : system("clear");
-            printGridUI("Transform Menu", *treeType);
-            printf("Tree Non-Binary Asal : \n");
-            PrintTree(*t, t->root, 0, t->isBinary);
-            printf("\nTree Binary Hasil : \n");
-            PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
-            gotoxy(0, 4);
-            printHalfScreen("Transformasi Non-Binary tree ke Binary Tree berhasil!", false, false);
-        }
-        else if (choice == 2)
-        {
-            informationMenu(t, btree, tAVL, treeType);
-        }
-        else
-        {
-            printHalfScreen("Input yang anda masukkan salah! Mohon input 1 atau 2", true, false);
+        if(IsEmpty(*t)){
+            printHalfScreen("Tree masih kosong, tidak bisa dilakukan transformasi!", true, false);
+            printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+            PLATFORM_NAME == "windows" ? getch() : getchar();
+            manipulationMenu(t, btree, tAVL, treeType);
+        }else{
+            printHalfScreen("Akan dilakukan transformasi dari Non-Binary Tree ke Binary Tree.", false, false);
+            printHalfScreen("1. Melanjutkan", true, false);
+            printHalfScreen("2. Kembali", true, false);
+            printHalfScreen("Pilihanmu = ", true, false);
+            scanf("%d", &choice);
+            if (choice == 1)
+            {
+                transform(*t, btree);
+                *treeType = BINARYTREE;
+                PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+                printGridUI("Transform Menu", *treeType);
+                printf("Tree Non-Binary Asal : \n");
+                PrintTree(*t, t->root, 0, t->isBinary);
+                printf("\nTree Binary Hasil : \n");
+                PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
+                gotoxy(0, 4);
+                printHalfScreen("Transformasi Non-Binary tree ke Binary Tree berhasil!", false, false);
+            }
+            else if (choice == 2)
+            {
+                manipulationMenu(t, btree, tAVL, treeType);
+            }
+            else
+            {
+                printHalfScreen("Input yang anda masukkan salah! Mohon input 1 atau 2", true, false);
+            }
         }
     }
     else if (*treeType == BINARYTREE)
