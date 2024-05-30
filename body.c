@@ -109,7 +109,7 @@ void insert(Tree *t)
     {
         PLATFORM_NAME == "windows" ? system("cls") : system("clear");
         printGridUI("Insert Tree", treeType);
-        PrintTree(t->root, 0, t->isBinary);
+        PrintTree(*t, t->root, 0, t->isBinary);
         gotoxy(0, 4);
         if (t->root == NULL)
         {
@@ -123,7 +123,7 @@ void insert(Tree *t)
         {
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
             printGridUI("Insert Tree", treeType);
-            PrintTree(t->root, 0, t->isBinary);
+            PrintTree(*t, t->root, 0, t->isBinary);
             gotoxy(0, 4);
             printHalfScreen("List node dalam tree: ", false, false);
             listNodes(*t);
@@ -156,7 +156,7 @@ void insert(Tree *t)
                     }
                     PLATFORM_NAME == "windows" ? system("cls") : system("clear");
                     printGridUI("Insert Tree", treeType);
-                    PrintTree(t->root, 0, t->isBinary);
+                    PrintTree(*t, t->root, 0, t->isBinary);
                     gotoxy(0, 4);
                     sprintf(pesan, "Node dengan info %c berhasil dimasukkan\n", info);
                     printHalfScreen(pesan, false, false);
@@ -181,7 +181,7 @@ void insert(Tree *t)
     {
         PLATFORM_NAME == "windows" ? system("cls") : system("clear");
         printGridUI("Insert Tree", treeType);
-        PrintTree(t->root, 0, t->isBinary);
+        PrintTree(*t, t->root, 0, t->isBinary);
         gotoxy(0, 4);
         if (t->root == NULL)
         {
@@ -195,7 +195,7 @@ void insert(Tree *t)
         {
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
             printGridUI("Insert Tree", treeType);
-            PrintTree(t->root, 0, t->isBinary);
+            PrintTree(*t, t->root, 0, t->isBinary);
             gotoxy(0, 4);
             printHalfScreen("List node dalam tree: ", false, false);
             listNodes(*t);
@@ -208,7 +208,7 @@ void insert(Tree *t)
                 (*t).root = insertAVLNode(t->root, info);
                 PLATFORM_NAME == "windows" ? system("cls") : system("clear");
                 printGridUI("Insert Tree", treeType);
-                PrintTree(t->root, 0, t->isBinary);
+                PrintTree(*t, t->root, 0, t->isBinary);
                 gotoxy(0, 4);
                 sprintf(pesan, "Node dengan info %c berhasil dimasukkan\n", info);
                 printHalfScreen(pesan, false, false);
@@ -245,7 +245,7 @@ void delete(Tree *t)
 deleteNode:
     PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     printGridUI("Delete Node", treeType);
-    PrintTree(t->root, 0, t->isBinary);
+    PrintTree(*t, t->root, 0, t->isBinary);
     gotoxy(0, 4);
     printHalfScreen("List node :", false, false);
     listNodes(*t);
@@ -273,7 +273,7 @@ deleteNode:
         }
         PLATFORM_NAME == "windows" ? system("cls") : system("clear");
         printGridUI("Delete Node", treeType);
-        PrintTree(t->root, 0, t->isBinary);
+        PrintTree(*t, t->root, 0, t->isBinary);
         gotoxy(0, 4);
         sprintf(pesan, "Node dengan info %c berhasil dihapus\n", info);
         printHalfScreen(pesan, false, false);
@@ -1000,9 +1000,9 @@ void balanceToAVL(Tree BTree, address BT, Tree *AVLTree)
         PLATFORM_NAME == "windows" ? system("cls") : system("clear");
         printGridUI("Node Details", AVLTREE);
         printf("Binary Tree Asal : \n");
-        PrintTree(BTree.root, 0, BTree.isBinary);
+        PrintTree(BTree, BTree.root, 0, BTree.isBinary);
         printf("\nAVL Tree Hasil Balancing : \n");
-        PrintTree(AVLTree->root, 0, AVLTree->isBinary);
+        PrintTree(*AVLTree, AVLTree->root, 0, AVLTree->isBinary);
         gotoxy(0, 3);
         printHalfScreen("Ketik Apapun Untuk Melanjutkan Animasi...", true, false);
         PLATFORM_NAME == "windows" ? getch() : getchar();
@@ -1647,7 +1647,7 @@ inputUpdatedNode:
             updateNode(t, info, newInfo);
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
             printGridUI("Manipulation Menu", t->isBinary == true ? BINARYTREE : NONBINARYTREE);
-            PrintTree(t->root, 0, t->isBinary);
+            PrintTree(*t, t->root, 0, t->isBinary);
             gotoxy(0, 4);
         }
         else
@@ -1672,19 +1672,19 @@ void PrintTreeVisualization(Tree t, Tree btree, Tree tAVL, int treeType)
 {
     if (treeType == NONBINARYTREE)
     {
-        PrintTree(t.root, 0, false);
+        PrintTree(t, t.root, 0, false);
     }
     else if (treeType == BINARYTREE)
     {
-        PrintTree(btree.root, 0, true);
+        PrintTree(btree, btree.root, 0, true);
     }
     else if (treeType == AVLTREE)
     {
-        PrintTree(tAVL.root, 0, true);
+        PrintTree(tAVL, tAVL.root, 0, true);
     }
 }
 
-void PrintTree(address P, int Level, bool isBinary)
+void PrintTree(Tree t, address P, int Level, bool isBinary)
 {
     if (P != NULL)
     {
@@ -1697,13 +1697,21 @@ void PrintTree(address P, int Level, bool isBinary)
             }
             else
             {
-                printf("|--");
+                if(t.isBinary){
+                    if (P == LeftSon(searchParent(t, P->info))) {
+                        printf("|%s--%s", "\033[0;34m", "\033[0m");
+                    } else {
+                        printf("|%s==%s", "\033[0;33m", "\033[0m");
+                    }
+                }else{
+                    printf("|--");
+                }
             }
         }
         printf("%c\n", Info(P));
         if (!LeftThread(P))
         {
-            PrintTree(LeftSon(P), Level + 1, isBinary);
+            PrintTree(t, LeftSon(P), Level + 1, isBinary);
         }
         if (isBinary)
         {
@@ -1711,7 +1719,7 @@ void PrintTree(address P, int Level, bool isBinary)
         }
         if (!RightThread(P))
         {
-            PrintTree(NextBrother(P), Level, isBinary);
+            PrintTree(t, NextBrother(P), Level, isBinary);
         }
     }
 }

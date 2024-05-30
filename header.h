@@ -111,7 +111,7 @@ void switchTreeMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void traverseMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType);
 void showTreeDetails(Tree *t, int *treeType);
-void PrintTree(address P, int Level, bool isBinary);
+void PrintTree(Tree t, address P, int Level, bool isBinary);
 void PrintTreeVisualization(Tree t, Tree btree, Tree tAVL, int treeType);
 void PrintDefaultTreePreview();
 void exitProgram();

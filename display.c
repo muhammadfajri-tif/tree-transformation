@@ -403,7 +403,7 @@ void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
             printGridUI("Transform Menu", *treeType);
             printf("Tree Non-Binary Asal : \n");
-            PrintTree(t->root, 0, t->isBinary);
+            PrintTree(*t, t->root, 0, t->isBinary);
             printf("\nTree Binary Hasil : \n");
             PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
             gotoxy(0, 4);
@@ -434,7 +434,7 @@ void transformMenu(Tree *t, Tree *btree, Tree *tAVL, int *treeType)
             PLATFORM_NAME == "windows" ? system("cls") : system("clear");
             printGridUI("Transform Menu", *treeType);
             printf("Tree Binary Asal : \n");
-            PrintTree(btree->root, 0, btree->isBinary);
+            PrintTree(*btree, btree->root, 0, btree->isBinary);
             printf("\nTree AVL Hasil : \n");
             PrintTreeVisualization(*t, *btree, *tAVL, *treeType);
             gotoxy(0, 4);
@@ -559,7 +559,7 @@ void showTreeDetails(Tree *t, int *treeType)
 inputMenu:
     PLATFORM_NAME == "windows" ? system("cls") : system("clear");
     printGridUI("Tree Details", *treeType);
-    PrintTree(t->root, 0, t->isBinary);
+    PrintTree(*t, t->root, 0, t->isBinary);
     gotoxy(0, 3);
     printHalfScreen("Tree Type: ", true, false);
     if (*treeType == NONBINARYTREE)
@@ -602,7 +602,7 @@ inputMenu:
     inputNode:
         PLATFORM_NAME == "windows" ? system("cls") : system("clear");
         printGridUI("Node Details", *treeType);
-        PrintTree(t->root, 0, t->isBinary);
+        PrintTree(*t, t->root, 0, t->isBinary);
         gotoxy(0, 3);
         printHalfScreen("Masukkan value dari node yang ingin dicari: ",true,false);
         scanf(" %c", &info);
@@ -716,7 +716,7 @@ void showTreeTypes(int treeType)
 void PrintDefaultTreePreview(){
     Tree t;
     defaultTree(&t);
-    PrintTree(Root(t), 0, t.isBinary);
+    PrintTree(t, Root(t), 0, t.isBinary);
 }
 
 void exitProgram(){
