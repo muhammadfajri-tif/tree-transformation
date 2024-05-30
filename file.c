@@ -31,23 +31,18 @@ FILE *accessFile(char filename[], char mode[])
   // empty string for filename will create default file
   if (strcmp(filename, "\n") == 0 || strcmp(filename, "") == 0)
   {
-    printf("\nMasuk If\n");
     strcpy(bufferName, DEFAULT_TREE_FILE);
   }
   else
   {
-    printf("\nMasuk Else\n");
     strcpy(bufferName, filename);
   }
-
-  printf("Buffer Name: %s\n", bufferName);
-  printf("Filename: %s\n", filename);
 
   file = fopen(bufferName, mode);
   if (file == NULL)
   {
-    printHalfScreen("\033[1;33m[WARN]\t\033[1;0mFile untuk menyimpan Tree tidak dapat ditemukan!", true, false);
-    printHalfScreen("\033[1;34m[INFO]\t\033[1;0mMembuat file untuk menyimpan Tree.", true, false);
+    printHalfScreen("\033[1;33m[WARN]\033[1;0m File untuk menyimpan Tree tidak dapat ditemukan!", true, false);
+    printHalfScreen("\033[1;34m[INFO]\033[1;0m Membuat file untuk menyimpan Tree.", true, false);
 
     file = fopen(bufferName, "wb");
 
@@ -56,14 +51,14 @@ FILE *accessFile(char filename[], char mode[])
 
     if (!error)
     {
-      char bufferMessage[75] = "\033[1;34m[INFO]\t\033[1;0mBerhasil membuat file '";
+      char bufferMessage[75] = "\033[1;34m[INFO]\033[1;0m Berhasil membuat file '";
       printHalfScreen(strcat(strcat(bufferMessage, bufferName), "'."), true, false);
     }
   }
 
   if (error)
     // Please check your storage's or file's permission
-    printHalfScreen("\033[1;31m[ERR]\t\033[1;0mGagal membuat file. Periksa kembali penyimpanan dan/atau perizinan file pada penyimpanan.", true, false);
+    printHalfScreen("\033[1;31m[ERR]\033[1;0m Gagal membuat file. Periksa kembali penyimpanan dan/atau perizinan file pada penyimpanan.", true, false);
 
   return file;
 }
@@ -106,7 +101,7 @@ void loadNodesTree(char filename[], Tree *nbtree)
     totalNode++;
   }
 
-  snprintf(bufferMessage, sizeof(bufferMessage), "\033[1;34m[INFO]\t\033[1;0mBerhasil memuat Tree dari file '%s' dengan total %d node.", (strcmp(filename, "\n") == 0) ? DEFAULT_TREE_FILE : filename, totalNode);
+  snprintf(bufferMessage, sizeof(bufferMessage), "\033[1;34m[INFO]\033[1;0m Berhasil memuat Tree dari file '%s' dengan total %d node.", (strcmp(filename, "\n") == 0) ? DEFAULT_TREE_FILE : filename, totalNode);
   printHalfScreen(bufferMessage, true, false);
 }
 

@@ -226,62 +226,67 @@ void insert(Tree *t)
 
 void delete(Tree *t)
 {
-    infotype info;
-    int treeType;
-    char pesan[50];
+    if(t->root == NULL){
+        printHalfScreen("Tree masih kosong!", true, false);
+        return;
+    }else{
+        infotype info;
+        int treeType;
+        char pesan[50];
 
-    if (!IsBinary(*t))
-    {
-        treeType = NONBINARYTREE;
-    }
-    else if (!IsAVL(*t))
-    {
-        treeType = BINARYTREE;
-    }
-    else
-    {
-        treeType = AVLTREE;
-    }
-deleteNode:
-    PLATFORM_NAME == "windows" ? system("cls") : system("clear");
-    printGridUI("Delete Node", treeType);
-    PrintTree(*t, t->root, 0, t->isBinary);
-    gotoxy(0, 4);
-    printHalfScreen("List node :", false, false);
-    listNodes(*t);
-    printHalfScreen("Masukkan Info Node Yang Ingin Dihapus = ", true, false);
-    scanf(" %c", &info);
-    if(info == t->root->info){
-        printHalfScreen("Tidak bisa menghapus root!", true, false);
-        printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
-        PLATFORM_NAME == "windows" ? getch() : getchar();
-        goto deleteNode;
-    }
-    if (search(*t, info) != NULL)
-    {
-        if (!t->isBinary)
+        if (!IsBinary(*t))
         {
-            deleteNBNode(t, info);
+            treeType = NONBINARYTREE;
         }
-        else if (t->isBinary == true && t->isAVL == false)
+        else if (!IsAVL(*t))
         {
-            deleteBTNode(t, info);
+            treeType = BINARYTREE;
         }
-        else if (t->isBinary == true && t->isAVL == true)
+        else
         {
-            (*t).root = deleteAVLNode(t->root, info);
+            treeType = AVLTREE;
         }
+    deleteNode:
         PLATFORM_NAME == "windows" ? system("cls") : system("clear");
         printGridUI("Delete Node", treeType);
         PrintTree(*t, t->root, 0, t->isBinary);
         gotoxy(0, 4);
-        sprintf(pesan, "Node dengan info %c berhasil dihapus\n", info);
-        printHalfScreen(pesan, false, false);
-    }
-    else
-    {
-        printHalfScreen("Node Tidak Ditemukan! Masukkan Info Node Yang Benar!\n", true, false);
-        goto deleteNode;
+        printHalfScreen("List node :", false, false);
+        listNodes(*t);
+        printHalfScreen("Masukkan Info Node Yang Ingin Dihapus = ", true, false);
+        scanf(" %c", &info);
+        if(info == t->root->info){
+            printHalfScreen("Tidak bisa menghapus root!", true, false);
+            printHalfScreen("Ketik apapun untuk melanjutkan...", true, false);
+            PLATFORM_NAME == "windows" ? getch() : getchar();
+            goto deleteNode;
+        }
+        if (search(*t, info) != NULL)
+        {
+            if (!t->isBinary)
+            {
+                deleteNBNode(t, info);
+            }
+            else if (t->isBinary == true && t->isAVL == false)
+            {
+                deleteBTNode(t, info);
+            }
+            else if (t->isBinary == true && t->isAVL == true)
+            {
+                (*t).root = deleteAVLNode(t->root, info);
+            }
+            PLATFORM_NAME == "windows" ? system("cls") : system("clear");
+            printGridUI("Delete Node", treeType);
+            PrintTree(*t, t->root, 0, t->isBinary);
+            gotoxy(0, 4);
+            sprintf(pesan, "Node dengan info %c berhasil dihapus\n", info);
+            printHalfScreen(pesan, false, false);
+        }
+        else
+        {
+            printHalfScreen("Node Tidak Ditemukan! Masukkan Info Node Yang Benar!\n", true, false);
+            goto deleteNode;
+        }
     }
 }
 
