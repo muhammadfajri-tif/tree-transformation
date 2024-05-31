@@ -94,7 +94,8 @@ inputMenu:
         }
         break;
     case 3:
-        printHalfScreen("Masukkan nama file (tekan enter untuk memuat dari default file): ", true, false);
+        printHalfScreen("Masukkan nama file", true, false);
+        printHalfScreen("(tekan enter untuk memuat dari default file): ", true, false);
         getchar();
         fgets(filename, 30, stdin);
         filename[strcspn(filename, "\r\n")] = 0; // remove newline
